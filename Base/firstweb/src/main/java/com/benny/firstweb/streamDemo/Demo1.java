@@ -3,10 +3,8 @@ package com.benny.firstweb.streamDemo;
 import org.springframework.aop.ThrowsAdvice;
 
 import javax.swing.plaf.synth.SynthEditorPaneUI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.lang.reflect.Field;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 
@@ -17,6 +15,7 @@ public class Demo1 {
     public static void main(String[] args) throws InterruptedException {
         streamDemo();
         streamTest();
+        streamTest2();
     }
 
 
@@ -65,12 +64,12 @@ public class Demo1 {
             countDownLatch1.countDown();
         });
 
-        Thread threadB = new Thread(() ->{
-           list2.parallelStream().forEach(integer ->{
-               Thread thread = Thread.currentThread();
-               threadSet2.add(thread);
-           });
-           countDownLatch1.countDown();
+        Thread threadB = new Thread(() -> {
+            list2.parallelStream().forEach(integer -> {
+                Thread thread = Thread.currentThread();
+                threadSet2.add(thread);
+            });
+            countDownLatch1.countDown();
         });
 
         threadA.start();
@@ -86,7 +85,40 @@ public class Demo1 {
         threadSet2.addAll(threadSet);
         System.out.println(threadSet2);
         System.out.println("threadSetTwo一共有" + threadSet2.size() + "个线程");
-        System.out.println("系统一个有"+Runtime.getRuntime().availableProcessors()+"个cpu");
+        System.out.println("系统一个有" + Runtime.getRuntime().availableProcessors() + "个cpu");
+    }
+
+    /**
+     * @decription 测试 parallelStream的执行效率
+     */
+    public static void streamTest2() throws InterruptedException {
+        List<Integer> nums = new ArrayList<>();
+        Random r = new Random();
+        for (int i = 0; i < 10000; i++) nums.add(1000000 + r.nextInt(100000));
+
+        long startTime = System.currentTimeMillis();
+        nums.forEach(v -> isPrime(v));
+        long endTime = System.currentTimeMillis();
+        System.out.println(endTime - startTime);
+
+        // 使用 parallelStream api
+        long startTime1 = System.currentTimeMillis();
+        nums.parallelStream().forEach(v -> isPrime(v));
+        long endTime2 = System.currentTimeMillis();
+        System.out.println(endTime2 - startTime1);
+    }
+
+    /**
+     * 判断是否为质数
+     *
+     * @param num
+     * @return
+     */
+    public static boolean isPrime(int num) {
+        for (int i = 2; i < num / 2; i++) {
+            if (num % i == 0) return false;
+        }
+        return true;
     }
 
 }
