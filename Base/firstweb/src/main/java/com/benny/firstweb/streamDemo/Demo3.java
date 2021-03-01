@@ -1,23 +1,20 @@
 package com.benny.firstweb.streamDemo;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.IntStream;
 
 /**
- * @description 并行的BUG
+ * @description java8使用并行流parallelStream以及普通迭代,并行流，普通流之间的效率对比
  */
-public class Demo2 {
+public class Demo3 {
     public static void main(String[] args) throws InterruptedException {
         streamDemo();
     }
 
     /**
-     * 在使用parallelStream时，需要注意线程安全的问题，该加锁的就加锁，
-     * 外部调用的ArrayList，HashMap等也必须使用和其对等的线程安全类，例如：ConcurrentHashMap等
+     * https://blog.csdn.net/qq_20009015/article/details/84892083外部调用的ArrayList，HashMap等也必须使用和其对等的线程安全类，例如：ConcurrentHashMap等
      */
     public static void streamDemo() {
         List<Integer> list1 = new ArrayList<>();
