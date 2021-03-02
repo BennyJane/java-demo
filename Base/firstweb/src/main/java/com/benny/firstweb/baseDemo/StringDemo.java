@@ -3,8 +3,10 @@ package com.benny.firstweb.baseDemo;
 public class StringDemo {
     public static void main(String[] args) {
         funcExc();
-        System.out.println("========  funcExc2 =============");
+        System.out.println("========  == equals =============");
         funcExc2();
+        System.out.println("========  ASCII =============");
+        funcExc3();
 
     }
 
@@ -24,7 +26,7 @@ public class StringDemo {
         int res3 = 1 - '0';
         System.out.println("字符串A的a差值： " + res3);
         String numStr = "0111";
-        System.out.println("contains: ： " + numStr.contains("1") );
+        System.out.println("contains: ： " + numStr.contains("1"));
     }
 
     static void funcExc2() {
@@ -37,5 +39,26 @@ public class StringDemo {
         if (s1.equals(s2)) {
             System.out.println("equals: s1 s2 相等.");
         }
+    }
+
+    static void funcExc3() {
+        // https://blog.csdn.net/daimadog/article/details/89069635
+        // 获取字符串ASCII值
+        // Integer.valueOf(a) 只能接收char类型的对象，String类型会报错
+        // String[] l = {"0", "9", "A", "Z", "a", "z"};
+        char[] l = {'0', '9', 'A', 'Z', 'a', 'z'};
+        for (char item : l) {
+            int s = Integer.valueOf(item);
+            System.out.println(item + " " + s);
+        }
+
+        char a='a';
+        char A='A';
+        int a_ascii=Integer.valueOf(a);
+        int A_ascii=Integer.valueOf(A);
+        System.out.println("字符"+a+"的ASCII码为："+a_ascii);
+        System.out.println("字符"+A+"的ASCII码为："+A_ascii);
+        System.out.println(A-2);
+        System.out.println(A_ascii-a_ascii);
     }
 }
