@@ -3,8 +3,11 @@ package com.benny.firstweb.streamDemo;
 import com.benny.firstweb.Utils;
 import com.sun.deploy.ui.UITextArea;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -79,6 +82,63 @@ public class Demo4 {
         Utils.print(collect1, "[distinct]: ");
 
         // sorted
-        
+        // Integer 自身实现Comparable接口，可以直接使用排序规则
+        List<Integer> integers = Arrays.asList(5, 8, 2, 6, 41, 11);
+        // 默认升序排列
+        List<Integer> sorted = integers.stream().sorted().collect(Collectors.toList());
+        List<Integer> reversedOrder = integers.stream()
+                .sorted(Comparator.reverseOrder())  // TODO
+                .collect(Collectors.toList());
+        // 通过Comparator.comparing()实现自定义排序方式
+        List<Integer> ages = integers.stream().sorted(Comparator.comparing(v->v.hashCode()))
+                .collect(Collectors.toList());
+
+        // limit: 返回一个不超过给定长度的流
+        // skip: 舍弃
+        List<Integer> integers1 = Arrays.asList(1,2,3,42,5,63,5,2);
+        List<Integer> collect2 = integers1.stream().limit(3).collect(Collectors.toList());
+        List<Integer> collect3 = integers1.stream().skip(3).collect(Collectors.toList());
+
+        // map： 归纳
+        // flatMap: 扁平化，将流中的数组或集合元素展开，或者 减少一个层级
+        String[] words = {"hello", "world"};
+        List<String> collect4 = Stream.of(words)
+                .map(w -> w.split(""))
+                //方法调用将两个String[]扁平化为一个stream
+                .flatMap(Arrays::stream)
+                .distinct()
+                .collect(Collectors.toList());
+
+        // peek 在流的每个元素恢复运行之前，插入执行一个动作
+        List<Integer> numbers = Arrays.asList(2, 3, 4, 5);
+        List<Integer> result =
+                numbers.stream()
+                        .peek(x -> System.out.println("from stream: " + x))
+                        .map(x -> x + 17)
+                        .peek(x -> System.out.println("after map: " + x))
+                        .filter(x -> x % 2 == 0)
+                        .peek(x -> System.out.println("after filter: " + x))
+                        .limit(3)
+                        .peek(x -> System.out.println("after limit: " + x))
+                        .collect(Collectors.toList());
+
+        // collect 收集
+        // Collectors.toList() Collectors.toSet() Collectors.toMap() 需要传参，有三种重载方法
+
+
+    }
+
+    /**
+     * 中止操作
+     * 循环： forEach
+     * 计算： min max count average
+     * 匹配： anyMatch allMatch noneMatch findFirst findAny
+     * 汇聚： reduce
+     * 收集器: collect
+     */
+    public void example3() {
+        // anyMatch
+        // 
+
     }
 }
