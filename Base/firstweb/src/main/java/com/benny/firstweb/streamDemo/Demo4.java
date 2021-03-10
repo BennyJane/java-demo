@@ -7,6 +7,7 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -23,8 +24,9 @@ public class Demo4 {
     public static void main(String[] args) {
         Demo4 d = new Demo4();
 
-        d.example1();
-        d.example2();
+//        d.example1();
+//        d.example2();
+        d.example3();
     }
 
 
@@ -90,12 +92,12 @@ public class Demo4 {
                 .sorted(Comparator.reverseOrder())  // TODO
                 .collect(Collectors.toList());
         // 通过Comparator.comparing()实现自定义排序方式
-        List<Integer> ages = integers.stream().sorted(Comparator.comparing(v->v.hashCode()))
+        List<Integer> ages = integers.stream().sorted(Comparator.comparing(v -> v.hashCode()))
                 .collect(Collectors.toList());
 
         // limit: 返回一个不超过给定长度的流
         // skip: 舍弃
-        List<Integer> integers1 = Arrays.asList(1,2,3,42,5,63,5,2);
+        List<Integer> integers1 = Arrays.asList(1, 2, 3, 42, 5, 63, 5, 2);
         List<Integer> collect2 = integers1.stream().limit(3).collect(Collectors.toList());
         List<Integer> collect3 = integers1.stream().skip(3).collect(Collectors.toList());
 
@@ -137,8 +139,46 @@ public class Demo4 {
      * 收集器: collect
      */
     public void example3() {
-        // anyMatch
-        // 
+        // 三者都返回boolean类型的结果，都是短路判断
+        // anyMatch 检测流中是否有一个满足判断的数据
+        // allMatch 检测流中元素是否全部满足判断条件
+        // noneMatch 检测流中所有元素是否都不满足判断条件
+
+
+        // findAny 返回当前流中任意元素（只返回了一个）
+        // findFirst 返回第一个元素
+        List<Integer> integerList = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8);
+        Optional<Integer> any = integerList.stream().filter(v -> v > 5).findAny();
+        System.out.println("any = " + any);
+
+        Optional<Integer> first = integerList.stream().filter(v -> v > 5).findFirst();
+        System.out.println("first = " + first);
+
+        // reduce 归约、连续处理
+        Integer reduceSum = integerList.stream().reduce(0, (a, b) -> a + b);
+        System.out.println("reduceSum " + reduceSum);
+        int reduceSum1 = integerList.stream().reduce(0, Integer::sum);
+        System.out.println("reduceSum1 " + reduceSum1);
+
+        // 最大值||最小值
+        List<Integer> integers = Arrays.asList(1, 2, 3, 6, 8);
+        Optional<Integer> min = integers.stream().reduce(Integer::min);
+        System.out.println("min = " + min);
+        Optional<Integer> max = integers.stream().reduce(Integer::max);
+        System.out.println("max = " + max);
+
+        // 收集器 Collectors
+        // Collectors.maxBy Collectors.minBy
+        // Collectors.summingInt
+        // Collectors.averagingInt
+        // Collectors.joining
+        // Collectors.counting
+        String collect = integerList.stream().map(v -> v.toString()).collect(Collectors.joining(", "));
+        System.out.println("joining = " + collect);
+
+        // 分组
+        // Collectors.groupingBy
+        // 多级分组
 
     }
 }
