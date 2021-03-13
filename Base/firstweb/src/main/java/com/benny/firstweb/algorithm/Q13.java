@@ -5,7 +5,7 @@ package com.benny.firstweb.algorithm;
  * https://leetcode-cn.com/problems/check-if-word-is-valid-after-substitutions/
  *
  * 题解：
- * 
+ *
  */
 public class Q13 {
 }
