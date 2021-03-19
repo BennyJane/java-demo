@@ -94,7 +94,13 @@ public class SteamDemo {
                 .collect(Collectors.toList());
         System.out.println("每个task的点数占总量的比例：" + res);
 
-        String filename = ".\\node.md";
+
+        /**
+         * Stream的方法onClose 返回一个等价的有额外句柄的Stream，
+         * 当Stream的close（）方法被调用的时候这个句柄会被执行。Stream API、Lambda表达式还有接口默认方法和静态方法支持的方法引用，是Java 8对软件开发的现代范式的响应。
+         *
+         */
+        String filename = "src/main/java/com/benny/learning/java8Demo/node.md";
         final Path path = new File(filename).toPath();
         try (
                 Stream<String> lines = Files.lines(path, StandardCharsets.UTF_8)
