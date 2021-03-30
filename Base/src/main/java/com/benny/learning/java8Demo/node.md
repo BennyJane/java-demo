@@ -7,3 +7,9 @@ Date Time API − 加强对日期与时间的处理。
 默认方法 − 默认方法就是一个在接口里面有了一个实现的方法。
 新工具 − 新的编译工具，如：Nashorn引擎 jjs、 类依赖分析器jdeps。
 Nashorn, JavaScript 引擎 − Java 8提供了一个新的Nashorn javascript引擎，它允许我们在JVM上运行特定的javascript应用。
+
+
+
+## 参考文章
+https://segmentfault.com/a/1190000022266823
+
