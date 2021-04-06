@@ -1,4 +1,4 @@
-package com.benny.learning.algorithm;
+package com.benny.learning.algorithm.leetcode;
 
 public class Q5 {
     public String removeDuplicateLetters(String s) {

@@ -1,4 +1,4 @@
-package com.benny.learning.algorithm;
+package com.benny.learning.algorithm.leetcode;
 
 import java.util.List;
 import java.util.Stack;

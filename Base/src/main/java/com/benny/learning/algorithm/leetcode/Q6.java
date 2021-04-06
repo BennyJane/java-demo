@@ -1,4 +1,4 @@
-package com.benny.learning.algorithm;
+package com.benny.learning.algorithm.leetcode;
 
 // 分苹果
 public class Q6 {
