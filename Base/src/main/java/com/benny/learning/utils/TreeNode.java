@@ -8,4 +8,12 @@ public class TreeNode {
     public TreeNode(int value) {
         this.val = value;
     }
+
+    public void addLeft(TreeNode node) {
+        this.left = node;
+    }
+
+    public void addRight(TreeNode node) {
+        this.right = node;
+    }
 }
