@@ -3,6 +3,7 @@ package com.benny.learning.algorithm.offer;
 import com.benny.learning.utils.TreeNode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -57,26 +58,22 @@ public class Q15 {
         if (root == null) {
             return paths;
         }
-        ;
         findPaths(paths, new ArrayList<Integer>(), root, target);
         return paths;
     }
 
     static void findPaths(List<List<Integer>> paths, List<Integer> path, TreeNode root, int target) {
+        if (root == null) return;
         path.add(root.val);
-        if (root.left == null && root.right == null) {
-            if (root.val == target) {
-                paths.add(path);
-            }
-            return;
+        if (root.val == target && root.left == null && root.right == null) {
+            paths.add(path);
         }
-        List<Integer> path2 = new ArrayList<>();
-        if (root.left != null) {
-            findPaths(paths, path, root.left, target - root.val);
-        }
-        if (root.right != null) {
-            findPaths(paths, path2, root.right, target - root.val);
-        }
+        // 每遇到一个分支，就单独创建一个path，用于存储
+        // 浪费存储空间
+        List<Integer> path2 = new ArrayList<Integer>();
+        path2.addAll(path);
+        findPaths(paths, path, root.left, target - root.val);
+        findPaths(paths, path2, root.right, target - root.val);
     }
 
     private List<List<Integer>> solution2(TreeNode root, int target) {
