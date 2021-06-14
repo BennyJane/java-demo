@@ -5,6 +5,7 @@ package com.benny.learning.algorithm.leetcode.order.middle;
  * https://leetcode-cn.com/problems/rotate-image/
  */
 public class Q50 {
+    // https://leetcode-cn.com/problems/rotate-image/solution/xuan-zhuan-tu-xiang-by-leetcode-solution-vu3m/
     public void rotate(int[][] matrix) {
         // 计算整个方形的宽度
         int width = matrix.length;
@@ -28,6 +29,12 @@ public class Q50 {
                 matrix[newRow][newCol] = newMatrix[row][col];
             }
         }
+    }
+
+    public void rotate2(int[][] matrix) {
+
+        
+        return;
     }
 }
 
