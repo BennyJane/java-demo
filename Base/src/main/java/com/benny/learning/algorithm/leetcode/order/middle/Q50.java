@@ -33,7 +33,7 @@ public class Q50 {
 
     public void rotate2(int[][] matrix) {
 
-        
+
         return;
     }
 }
