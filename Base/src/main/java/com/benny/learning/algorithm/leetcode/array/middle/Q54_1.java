@@ -1,6 +1,5 @@
 package com.benny.learning.algorithm.leetcode.array.middle;
 
-import javax.swing.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,57 +8,45 @@ import java.util.Set;
  * 565. 数组嵌套
  * https://leetcode-cn.com/problems/array-nesting/
  */
-public class Q54 {
+public class Q54_1 {
 
-    // 耗时过长
+    // TODO 耗时过长
     private int ans = 0;
-    HashMap<Integer, Set<Integer>> map;
+    HashMap<Integer, Integer> map;
 
     public int arrayNesting(int[] nums) {
         // 第一个int： 数组的索引
         // 第二个int: 索引对应的S最大值
         map = new HashMap<>();
+        map.put(-1, 0);
+
         Set<Integer> set;
         int len;
         for (int i = 0; i < nums.length; i++) {
             set = new HashSet<>();
-            dfs(nums, i, set);
-            map.put(i, set);
+            len = dfs(nums, i, set);
+            map.put(i, len);
         }
 
         return ans;
     }
 
-    private void dfs(int[] nums, int index, Set<Integer> set) {
+    private int dfs(int[] nums, int index, Set<Integer> set) {
         int nextIndex = nums[index];
         int len = set.size();
         if (set.contains(nextIndex)) {
             if (ans < len) {
                 ans = len;
             }
-            return;
-        }
-
-        if (map.containsKey(nextIndex)) {
-            Set<Integer> oldSet = map.get(nextIndex);
-            for (int n : oldSet) {
-                if (!set.contains(n)) {
-                    set.add(n);
-                    len++;
-                }
-            }
-            if (ans < len) {
-                ans = len;
-            }
-            return;
+            return len;
         }
 
         set.add(nextIndex);
-        dfs(nums, nextIndex, set);
+        return dfs(nums, nextIndex, set);
     }
 
     public static void main(String[] args) {
-        Q54 q = new Q54();
+        Q54_1 q = new Q54_1();
         int[] nums = new int[]{5, 4, 0, 3, 1, 6, 2};
         System.out.println(q.arrayNesting(nums));
     }
