@@ -1,5 +1,7 @@
 package com.benny.learning.algorithm.leetcode.array.middle;
 
+import javax.swing.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,9 +9,34 @@ import java.util.List;
  * https://leetcode-cn.com/problems/subsets/
  */
 public class Q58 {
-    public List<List<Integer>> subsets(int[] nums) {
 
-        return null;
+    private List<List<Integer>> ans;
+
+    public List<List<Integer>> subsets(int[] nums) {
+        ans = new ArrayList<>();
+        List<Integer> arr = new ArrayList<>();
+        dfs(nums, 0, arr);
+        System.out.println(ans);
+        return ans;
+    }
+
+    private void dfs(int[] nums, int i, List<Integer> arr) {
+        if (i >= nums.length) {
+            ans.add(new ArrayList<>(arr));
+        } else {
+            dfs(nums, i + 1, arr);   // 不包含该数值
+            int temp = nums[i];
+            arr.add(temp);
+            dfs(nums, i + 1, arr);
+            arr.remove(arr.size() - 1); //包含该数值
+
+        }
+    }
+
+    public static void main(String[] args) {
+        Q58 q = new Q58();
+        int[] nums = new int[]{1, 2, 3};
+        q.subsets(nums);
     }
 }
 
