@@ -17,7 +17,7 @@ public class Q78 {
         int left = 0;
         for (int right= 0; right < nums.length; right++) {
             prod *= nums[right];
-            while (prod > k) {
+            while (prod >= k) {
                 prod /= nums[left];
                 left++;
             }
