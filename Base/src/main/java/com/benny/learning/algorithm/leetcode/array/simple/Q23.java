@@ -8,7 +8,7 @@ import com.benny.learning.utils.TreeNode;
  */
 public class Q23 {
     public boolean findTarget(TreeNode root, int k) {
-        
+
         return false;
     }
 }
