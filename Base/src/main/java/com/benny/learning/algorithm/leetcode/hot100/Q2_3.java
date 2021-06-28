@@ -6,24 +6,27 @@ package com.benny.learning.algorithm.leetcode.hot100;
  */
 public class Q2_3 {
     // 子序列字符的相对位置不变
+    // 子序列可以是非连续的字符构成
+
+    // https://leetcode-cn.com/problems/longest-palindromic-subsequence/solution/zi-xu-lie-wen-ti-tong-yong-si-lu-zui-chang-hui-wen/
     public int longestPalindromeSubseq(String s) {
-        int ans = 0;
-        int len = s.length();
-        // （len *2 -1） / 2: 偶数长度，中心位置左侧索引
-        for (int i = 0; i < len * 2 - 1; i++) {
-            int left = i / 2;
-            int right = i / 2 + i % 2;
-            int childLen = 0;   // 计算当前回文串长度
-            while (left >= 0 && right < len
-                    && s.charAt(left) == s.charAt(right)) {
-                childLen += left == right ? 1 : 2;
-                left--;
-                right++;
-            }
-            ans = Math.max(ans, childLen);
+        int n = s.length();
+        int[][] dp = new int[n][n];
+
+        for (int i = 0; i < n; i++) {
+            dp[i][i] = 1;
         }
 
-        return ans;
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = i + 1; j < n; j++) {
+                if (s.charAt(i) == s.charAt(j)) {
+                    dp[i][j] = dp[i + 1][j - 1] + 2;
+                } else {
+                    dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[0][n - 1];
     }
 }
 
