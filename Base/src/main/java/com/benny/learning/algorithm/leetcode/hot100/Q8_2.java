@@ -8,7 +8,7 @@ import java.util.Arrays;
  * <p>
  * 参考丑数；超级丑数类型题目
  */
-public class Q8 {
+public class Q8_2 {
     // 1: 统计硬币可以表示的金额 -》 可能会超时
     // 2: 直接判断amount是否可以用已有金币构成
 
@@ -66,7 +66,7 @@ public class Q8 {
     }
 
     public static void main(String[] args) {
-        Q8 q = new Q8();
+        Q8_2 q = new Q8_2();
         int[] nums = new int[]{2};
         q.coinChange(nums, 3);
     }

@@ -7,6 +7,8 @@ package com.benny.learning.algorithm.leetcode.hot100;
  * 动态规划
  */
 public class Q7_2 {
+    // TODO 考虑使用一维数组实现动态规划
+
     public int countSquares(int[][] matrix) {
         if (matrix[0].length == 0) {
             return 0;
