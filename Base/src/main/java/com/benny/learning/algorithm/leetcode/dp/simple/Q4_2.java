@@ -1,5 +1,7 @@
 package com.benny.learning.algorithm.leetcode.dp.simple;
 
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.Stack;
 
 /**
@@ -9,39 +11,38 @@ import java.util.Stack;
 public class Q4_2 {
     // 注意点： 运算优先级(可以不考虑，因为只有加减法)；括号处理
     public int calculate(String s) {
-        int len = s.length();
-        if (len <= 0) {
-            return 0;
-        }
-        int ans = 0;
-        char[] arr = s.toCharArray();
-        Stack<Integer> stack = new Stack<>();
-        int left = 0;
-        while (left < len) {
-            Character cur = s.charAt(left);
-            
-        }
-        for (char c : arr) {
-            Integer newNum = 0;
-            if (c - ' ' == 0) {
-                continue;
-            }
+        Deque<Integer> ops = new LinkedList<Integer>();
+        ops.push(1);
+        int sign = 1;
 
-            if (c == '+') {
-                int one = stack.pop();
-                int two = stack.pop();
-                newNum = one + two;
-            } else if (c == '-') {
-                int one = stack.pop();
-                int two = stack.pop();
-                newNum = two - one;
+        int ret = 0;
+        int n = s.length();
+        int i = 0;
+        while (i < n) {
+            if (s.charAt(i) == ' ') {
+                i++;
+            } else if (s.charAt(i) == '+') {
+                sign = ops.peek();
+                i++;
+            } else if (s.charAt(i) == '-') {
+                sign = -ops.peek();
+                i++;
+            } else if (s.charAt(i) == '(') {
+                ops.push(sign);
+                i++;
+            } else if (s.charAt(i) == ')') {
+                ops.pop();
+                i++;
             } else {
-                newNum = c - '0';
+                long num = 0;
+                while (i < n && Character.isDigit(s.charAt(i))) {
+                    num = num * 10 + s.charAt(i) - '0';
+                    i++;
+                }
+                ret += sign * num;
             }
-            stack.add(newNum);
         }
-
-        return stack.peek();
+        return ret;
     }
 
     public static void main(String[] args) {
