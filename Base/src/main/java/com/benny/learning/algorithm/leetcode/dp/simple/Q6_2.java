@@ -4,7 +4,7 @@ package com.benny.learning.algorithm.leetcode.dp.simple;
  * 542. 01 矩阵
  * https://leetcode-cn.com/problems/01-matrix/
  */
-public class Q6 {
+public class Q6_2 {
 
     int m;
     int n;
@@ -55,7 +55,7 @@ public class Q6 {
     }
 
     public static void main(String[] args) {
-        Q6 q = new Q6();
+        Q6_2 q = new Q6_2();
         int[][] nums = new int[][]{
                 {0, 0, 0},
                 {0, 1, 0},
