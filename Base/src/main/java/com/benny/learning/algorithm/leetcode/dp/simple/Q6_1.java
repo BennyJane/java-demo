@@ -14,7 +14,6 @@ public class Q6_1 {
                 {0, 0, 0},
                 {1, 1, 1},
         };
-        q.updateMatrix(nums);
     }
 }
 
