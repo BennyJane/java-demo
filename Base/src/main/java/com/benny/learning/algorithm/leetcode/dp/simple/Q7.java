@@ -8,6 +8,7 @@ import java.util.Arrays;
  */
 public class Q7 {
     // TODO 考虑使用Map来统计是否已经被使用？
+    // 超时
     private boolean[] visited;
     private int width;
 
