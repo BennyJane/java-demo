@@ -6,72 +6,73 @@ package com.benny.learning.algorithm.leetcode.dp.middle;
  */
 public class Q2_4 {
     // 暴力求解： 遍历所有子区间，然后计算区间和
-
-    private long lower;
-    private long upper;
-
     public int countRangeSum(int[] nums, int lower, int upper) {
-        int len = nums.length;
-        if (len < 1) {
+        long s = 0;
+        long[] sum = new long[nums.length + 1];
+        for (int i = 0; i < nums.length; ++i) {
+            s += nums[i];
+            sum[i + 1] = s;
+        }
+        return countRangeSumRecursive(sum, lower, upper, 0, sum.length - 1);
+    }
+
+    public int countRangeSumRecursive(long[] sum, int lower, int upper, int left, int right) {
+        if (left == right) {
             return 0;
-        }
+        } else {
+            int mid = (left + right) / 2;
+            int n1 = countRangeSumRecursive(sum, lower, upper, left, mid);
+            int n2 = countRangeSumRecursive(sum, lower, upper, mid + 1, right);
+            int ret = n1 + n2;
 
-        this.lower = lower;
-        this.upper = upper;
-        // 前缀和
-        int[] temp = new int[len + 1];
-        for (int i = 0; i < len; i++) {
-            temp[i + 1] = nums[i] + temp[i];
-        }
-
-        int ans = countRangeSum(nums, 0, len - 1, temp);
-        return ans;
-    }
-
-    private int countRangeSum(int[] nums, int left, int right, int[] temp) {
-        if (left >= right) {
-            if (nums[left] >= lower && nums[left] <= upper) {
-                return 1;
+            // 首先统计下标对的数量
+            int i = left;
+            int l = mid + 1;
+            int r = mid + 1;
+            while (i <= mid) {
+                while (l <= right && sum[l] - sum[i] < lower) {
+                    l++;
+                }
+                while (r <= right && sum[r] - sum[i] <= upper) {
+                    r++;
+                }
+                ret += r - l;
+                i++;
             }
-            return 0;
-        }
 
-        int mid = left + (right - left) / 2;
-        int leftCount = countRangeSum(nums, left, mid, temp);
-        int rightCount = countRangeSum(nums, mid + 1, right, temp);
-
-        int mergeCount = mergeAndCount(nums, left, mid, right, temp);
-
-        return leftCount + rightCount + mergeCount;
-    }
-
-    private int mergeAndCount(int[] nums, int left, int mid, int right, int[] temp) {
-        // 首先统计下标对的数量
-        int i = left;
-        int j = mid + 1;
-
-        int count = 0;
-        while (i <= mid) {
-            while (j <= right
-                    && temp[j+1] - temp[i+1] >= lower
-                    && temp[j+1] - temp[i+1] <= upper
-            ) {
-                j++;
+            // 随后合并两个排序数组
+            long[] sorted = new long[right - left + 1];
+            int p1 = left, p2 = mid + 1;
+            int p = 0;
+            while (p1 <= mid || p2 <= right) {
+                if (p1 > mid) {
+                    sorted[p++] = sum[p2++];
+                } else if (p2 > right) {
+                    sorted[p++] = sum[p1++];
+                } else {
+                    if (sum[p1] < sum[p2]) {
+                        sorted[p++] = sum[p1++];
+                    } else {
+                        sorted[p++] = sum[p2++];
+                    }
+                }
             }
-            count += j - mid - 1;
-            i++;
+            for (int j = 0; j < sorted.length; j++) {
+                sum[left + j] = sorted[j];
+            }
+            return ret;
         }
-        return count;
     }
+
 
     public static void main(String[] args) {
         Q2_4 q = new Q2_4();
         int[] nums = new int[]{
-//                -2, 5, -1
-                -1, 1
+                -2, 5, -1
+//                -1, 1
         };
-//        q.countRangeSum(nums, -2, 2);
-        q.countRangeSum(nums, 0, 0);
+        q.countRangeSum(nums, -2, 2);
+//        q.countRangeSum(nums, 0, 0);
     }
 }
 
