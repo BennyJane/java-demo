@@ -33,6 +33,20 @@ public class Q1 {
         }
         return dp[N - 1][C];
     }
+
+    public int maxValue2(int N, int C, int[] v, int[] w) {
+        int[] dp = new int[C + 1];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j <= C; j++) {
+                // 不考虑第 i 件物品的情况（选择 0 件物品 i）
+                int n = dp[j];
+                // 考虑第 i 件物品的情况
+                int y = j - v[i] >= 0 ? dp[j - v[i]] + w[i] : 0;
+                dp[j] = Math.max(n, y);
+            }
+        }
+        return dp[C];
+    }
 }
 
 
