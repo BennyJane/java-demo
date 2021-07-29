@@ -2,8 +2,6 @@ package com.benny.learning.algorithm.leetcode.dp.bag;
 
 /**
  * 完全背包问题： 每件物品可无限次选中
- *
- * 
  */
 public class Q1 {
     public int maxValue(int N, int C, int[] v, int[] w) {
