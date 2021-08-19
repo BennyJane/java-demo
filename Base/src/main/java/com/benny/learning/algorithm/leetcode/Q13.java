@@ -11,7 +11,7 @@ import java.util.Stack;
  */
 public class Q13 {
     public boolean isValid(String s) {
-        boolean res = false;
+        boolean res  = false;
         char[] chars = s.toCharArray();
 
         Stack<Character> st = new Stack<>();
