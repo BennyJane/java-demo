@@ -19,6 +19,7 @@ public class createScheduledThreadPool extends Task {
         // 线程最多只有3个
         // 日志间隔2s输出
         cachedThreadPool.runTask(executorService, 10, 2000);
+        executorService.shutdown();
     }
     // 使用的时ScheduledExecutorService，而不是 ExecutorService
     public void runTask(ScheduledExecutorService executorService, int count, int interval) {
@@ -34,5 +35,6 @@ public class createScheduledThreadPool extends Task {
                 }
             }, 2, TimeUnit.SECONDS);
         }
+
     }
 }

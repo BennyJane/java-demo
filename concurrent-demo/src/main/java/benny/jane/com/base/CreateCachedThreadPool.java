@@ -24,5 +24,6 @@ public class CreateCachedThreadPool extends Task {
         cachedThreadPool.runTask(executorService, 50, 2);
         // 抛出异常
 //        cachedThreadPool.runTask(executorService, 1000, 2);
+        executorService.shutdown();
     }
 }

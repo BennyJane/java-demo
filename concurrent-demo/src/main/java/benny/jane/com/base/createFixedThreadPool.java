@@ -15,5 +15,6 @@ public class createFixedThreadPool extends Task {
         // 线程最多只有10个
         cachedThreadPool.runTask(executorService, 20, 1);
 //        cachedThreadPool.runTask(executorService, 5, 1);
+        executorService.shutdown();
     }
 }
