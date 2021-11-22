@@ -1,7 +1,8 @@
 package org.exmaple.com.enumDemo;
 
 // 静态导入所有枚举类元素，可直接使用
-import static com.benny.learning.enumDemo.EnumDemo.Attr1;
+
+import static org.exmaple.com.enumDemo.EnumDemo.Attr1;
 
 public class Demo {
     public static void main(String[] args) {

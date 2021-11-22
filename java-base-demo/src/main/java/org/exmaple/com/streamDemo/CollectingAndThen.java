@@ -1,9 +1,7 @@
 package org.exmaple.com.streamDemo;
 
-import com.benny.learning.CommonData;
+import org.exmaple.com.CommonData;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class CollectingAndThen {

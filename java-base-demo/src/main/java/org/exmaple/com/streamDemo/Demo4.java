@@ -1,6 +1,6 @@
 package org.exmaple.com.streamDemo;
 
-import com.benny.learning.Utils;
+import org.exmaple.com.Utils;
 
 import java.util.Arrays;
 import java.util.Comparator;
