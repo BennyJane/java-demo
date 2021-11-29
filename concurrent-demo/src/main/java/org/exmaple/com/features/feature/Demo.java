@@ -29,6 +29,8 @@ public class Demo {
 //        executor.shutdown();
 
 
+        StringBuffer sb = new StringBuffer();
+
         Thread thread1 = new Thread(new Runnable() {
             @Override
             public void run() {
