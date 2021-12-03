@@ -1,7 +1,6 @@
 package org.exmaple.com.leetcode.array.middle;
 
-
-import com.benny.learning.algorithm.utils.ListNode;
+import org.exmaple.com.utils.ListNode;
 
 /**
  * 141 环形链表

@@ -1,6 +1,7 @@
 package org.exmaple.com.leetcode.linkedList.simple;
 
-import com.benny.learning.algorithm.utils.ListNode;
+
+import org.exmaple.com.utils.ListNode;
 
 /**
  * 21. 合并两个有序链表

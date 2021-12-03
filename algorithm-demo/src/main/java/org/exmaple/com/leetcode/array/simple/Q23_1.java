@@ -1,6 +1,5 @@
 package org.exmaple.com.leetcode.array.simple;
 
-import com.benny.learning.utils.TreeNode;
 
 import java.util.HashSet;
 import java.util.LinkedList;

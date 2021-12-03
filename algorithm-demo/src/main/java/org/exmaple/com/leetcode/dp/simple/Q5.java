@@ -1,6 +1,5 @@
 package org.exmaple.com.leetcode.dp.simple;
 
-import com.benny.learning.algorithm.Q;
 
 public class Q5 {
     private int ans = 0;

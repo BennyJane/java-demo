@@ -1,6 +1,7 @@
 package org.exmaple.com.leetcode.tree;
 
-import com.benny.learning.utils.TreeNode;
+
+import org.exmaple.com.utils.TreeNode;
 
 public class Q14 {
 

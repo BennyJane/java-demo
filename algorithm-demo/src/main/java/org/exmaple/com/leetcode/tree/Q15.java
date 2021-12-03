@@ -1,6 +1,7 @@
 package org.exmaple.com.leetcode.tree;
 
-import com.benny.learning.utils.TreeNode;
+
+import org.exmaple.com.utils.TreeNode;
 
 /**
  * https://leetcode-cn.com/problems/merge-two-binary-trees/

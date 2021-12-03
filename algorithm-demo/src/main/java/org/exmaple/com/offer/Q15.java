@@ -1,6 +1,6 @@
 package org.exmaple.com.offer;
 
-import com.benny.learning.utils.TreeNode;
+import org.exmaple.com.utils.TreeNode;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

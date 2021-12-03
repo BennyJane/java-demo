@@ -1,6 +1,7 @@
 package org.exmaple.com.leetcode.tree;
 
-import com.benny.learning.algorithm.utils.MultiNode;
+
+import org.exmaple.com.utils.MultiNode;
 
 import java.util.List;
 

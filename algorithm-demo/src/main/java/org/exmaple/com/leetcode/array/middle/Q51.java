@@ -1,6 +1,5 @@
 package org.exmaple.com.leetcode.array.middle;
 
-import com.benny.learning.algorithm.Q;
 
 import java.util.Arrays;
 

@@ -1,6 +1,7 @@
 package org.exmaple.com.leetcode.linkedList.simple;
 
-import com.benny.learning.algorithm.utils.ListNode;
+
+import org.exmaple.com.utils.ListNode;
 
 /**
  * https://leetcode-cn.com/problems/palindrome-linked-list/

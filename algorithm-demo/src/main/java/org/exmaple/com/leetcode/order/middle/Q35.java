@@ -1,6 +1,7 @@
 package org.exmaple.com.leetcode.order.middle;
 
-import com.benny.learning.utils.TreeNode;
+
+import org.exmaple.com.utils.TreeNode;
 
 import java.util.List;
 

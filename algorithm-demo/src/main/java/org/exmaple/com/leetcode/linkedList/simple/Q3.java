@@ -1,6 +1,7 @@
 package org.exmaple.com.leetcode.linkedList.simple;
 
-import com.benny.learning.algorithm.utils.ListNode;
+
+import org.exmaple.com.utils.ListNode;
 
 import java.util.Stack;
 

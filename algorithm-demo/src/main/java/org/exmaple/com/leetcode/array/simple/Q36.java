@@ -1,7 +1,5 @@
 package org.exmaple.com.leetcode.array.simple;
 
-import com.benny.learning.algorithm.Q;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

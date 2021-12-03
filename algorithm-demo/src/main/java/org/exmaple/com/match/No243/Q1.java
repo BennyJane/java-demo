@@ -1,6 +1,5 @@
 package org.exmaple.com.match.No243;
 
-import com.benny.learning.algorithm.Q;
 
 public class Q1 {
     public static void main(String[] args) {

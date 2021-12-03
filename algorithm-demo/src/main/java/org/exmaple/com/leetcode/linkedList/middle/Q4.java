@@ -1,6 +1,7 @@
 package org.exmaple.com.leetcode.linkedList.middle;
 
-import com.benny.learning.algorithm.utils.ListNode;
+
+import org.exmaple.com.utils.ListNode;
 
 /**
  * 86. 分隔链表

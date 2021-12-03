@@ -1,8 +1,8 @@
 package org.exmaple.com.leetcode.linkedList.middle;
 
-import com.benny.learning.algorithm.utils.ListNode;
 import com.sun.jmx.snmp.SnmpOid;
 import com.sun.org.apache.xerces.internal.impl.xs.identity.UniqueOrKey;
+import org.exmaple.com.utils.ListNode;
 
 /**
  * 82. 删除排序链表中的重复元素 II

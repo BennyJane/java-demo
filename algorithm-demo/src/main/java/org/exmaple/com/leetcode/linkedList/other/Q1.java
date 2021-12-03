@@ -1,6 +1,5 @@
 package org.exmaple.com.leetcode.linkedList.other;
 
-import com.benny.learning.algorithm.utils.ListNode;
 
 /**
  * 回文单链表

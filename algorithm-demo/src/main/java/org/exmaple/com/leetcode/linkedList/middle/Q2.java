@@ -1,6 +1,7 @@
 package org.exmaple.com.leetcode.linkedList.middle;
 
-import com.benny.learning.algorithm.utils.ListNode;
+
+import org.exmaple.com.utils.ListNode;
 
 /**
  * https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/

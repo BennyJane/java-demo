@@ -1,8 +1,8 @@
 package org.exmaple.com.leetcode.array.middle;
 
 
-import com.benny.learning.algorithm.utils.ListNode;
-import org.springframework.web.context.support.GroovyWebApplicationContext;
+
+import org.exmaple.com.utils.ListNode;
 
 import java.util.HashSet;
 import java.util.Set;

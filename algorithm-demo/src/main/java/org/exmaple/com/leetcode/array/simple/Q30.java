@@ -1,6 +1,7 @@
 package org.exmaple.com.leetcode.array.simple;
 
-import com.benny.learning.algorithm.utils.ListNode;
+
+import org.exmaple.com.utils.ListNode;
 
 /**
  * 2. 两数相加
