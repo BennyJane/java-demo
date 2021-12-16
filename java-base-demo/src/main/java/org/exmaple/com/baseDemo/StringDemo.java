@@ -61,4 +61,9 @@ public class StringDemo {
         System.out.println(A-2);
         System.out.println(A_ascii-a_ascii);
     }
+
+    static void funcExc4() {
+        StringBuffer sb = new StringBuffer();
+        String s = new String();
+    }
 }

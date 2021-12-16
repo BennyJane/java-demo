@@ -74,6 +74,9 @@ public class Q1 {
             }
         }
 
+
+
+        
         Function<Integer, Integer> func = ori -> {
             int nextState = 0;
             for (int i = 1; i < LENGTH - 1; i++) {
