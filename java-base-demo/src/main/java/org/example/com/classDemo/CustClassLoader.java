@@ -7,20 +7,34 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
+import java.nio.charset.StandardCharsets;
 
 public class CustClassLoader extends ClassLoader {
     public CustClassLoader() {
     }
 
+    /**
+     * 构造器
+     * @param parent 父类加载器
+     */
     public CustClassLoader(ClassLoader parent) {
         super(parent);
     }
 
+    /**
+     * 核心重写方法
+     * @param name 加载类的名称
+     * @return 加载后的类
+     * @throws ClassNotFoundException
+     */
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
+        // 加载类文件
         File classFile = getClassFile(name);
         try {
+            // 类文件读取为二进制流文件
             byte[] bytes = getClassBytes(classFile);
+            // TODO 核心方法 .defineClass()
             Class<?> c = this.defineClass(name, bytes, 0, bytes.length);
             return c;
         } catch (Exception e) {
@@ -31,7 +45,7 @@ public class CustClassLoader extends ClassLoader {
     }
 
     private File getClassFile(String name) {
-        String classPath = "F:\\BennyOfJava\\java-demo\\java-base-demo\\data\\TargetLoadedClass.class";
+        String classPath = "SupportData/TargetLoadedClass.txt";
         File file = new File(classPath);
         return file;
     }
