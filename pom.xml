@@ -13,6 +13,7 @@
         <module>algorithm-demo</module>
         <module>concurrent-demo</module>
         <module>java-redis-example</module>
+        <module>java-design-pattern-demo</module>
     </modules>
 
 
