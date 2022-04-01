@@ -1,5 +1,8 @@
 package org.example.com.baseDemo;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class StringDemo {
     public static void main(String[] args) {
         funcExc();
@@ -8,6 +11,21 @@ public class StringDemo {
         System.out.println("========  ASCII =============");
         funcExc3();
 
+        String s1 = "通话";
+        String s2 = "重地";
+        int hashCode1 = s1.hashCode();
+        int hashCode2 = s2.hashCode();
+        System.out.println(String.format("s1: %d; s2: %d", s1.hashCode(), s2.hashCode()));
+        System.out.println(hashCode1 == hashCode2);
+        System.out.println(s1.equals(s2));
+
+        Map<String, Integer> map = new HashMap<>();
+        map.put(s1, 1);
+        map.put(s2, 1);
+        System.out.println(map.size());
+        map.containsKey(s1);
+
+        funcExc4();
     }
 
     static void funcExc() { // ASCII值：数字 < 大写字母 < 小写字母(-32)
@@ -52,18 +70,23 @@ public class StringDemo {
             System.out.println(item + " " + s);
         }
 
-        char a='a';
-        char A='A';
-        int a_ascii=Integer.valueOf(a);
-        int A_ascii=Integer.valueOf(A);
-        System.out.println("字符"+a+"的ASCII码为："+a_ascii);
-        System.out.println("字符"+A+"的ASCII码为："+A_ascii);
-        System.out.println(A-2);
-        System.out.println(A_ascii-a_ascii);
+        char a = 'a';
+        char A = 'A';
+        int a_ascii = Integer.valueOf(a);
+        int A_ascii = Integer.valueOf(A);
+        System.out.println("字符" + a + "的ASCII码为：" + a_ascii);
+        System.out.println("字符" + A + "的ASCII码为：" + A_ascii);
+        System.out.println(A - 2);
+        System.out.println(A_ascii - a_ascii);
     }
 
     static void funcExc4() {
         StringBuffer sb = new StringBuffer();
         String s = new String();
+        // https://blog.csdn.net/lonely_fireworks/article/details/7962171
+        // String.format() 参考资料
+        System.out.println(String.format("%d(%s)", 10, "天"));
+
+        // https://www.codeleading.com/article/37974759673/
     }
 }

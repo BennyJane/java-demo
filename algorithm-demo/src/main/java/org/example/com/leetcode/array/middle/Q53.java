@@ -42,7 +42,7 @@ public class Q53 {
             preSum[i + 1] = preSum[i] + nums[i];
         }
 
-        Set<Integer> set = new HashSet<>();
+        Set<Integer> set = new HashSet();
         for (int i = 2; i < preSum.length; i++) {
             int mod = preSum[i - 2] % k;    // 确保只计算出满足长度为2的子数组和的余数
             if (set.contains(preSum[i] % k)) {

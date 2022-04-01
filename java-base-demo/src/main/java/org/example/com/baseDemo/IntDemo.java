@@ -11,6 +11,9 @@ public class IntDemo {
         Double d = new Double(1L);
         Float f = new Float(1L);
         Short s = new Short("1");
+
+        // FIXME 默认视作二进制， 打印输出十进制：41637
+        System.out.println(00121245);
     }
 
     static void funcExc1() {
