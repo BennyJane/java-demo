@@ -1,7 +1,5 @@
 package org.example.com.offer.special;
 
-import org.example.com.Q;
-
 //494. 目标和
 public class Q1 {
 
