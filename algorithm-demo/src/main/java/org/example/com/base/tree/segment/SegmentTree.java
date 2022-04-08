@@ -1,4 +1,4 @@
-package org.example.com.base;
+package org.example.com.base.tree.segment;
 
 /**
  * 线段树
@@ -15,14 +15,6 @@ public class SegmentTree {
         // 左节点索引 = 2 * nodeIndex  +1
         // 右节点索引 = 2 * nodeIndex  + 2
         build(0, 0, n - 1, nums);
-    }
-
-    public void update(int index, int val) {
-        change(index, val, 0, 0, n - 1);
-    }
-
-    public int sumRange(int left, int right) {
-        return range(left, right, 0, 0, n - 1);
     }
 
 
@@ -53,7 +45,11 @@ public class SegmentTree {
         tree[node] = tree[node * 2 + 1] + tree[node * 2 + 2];
     }
 
-    public void change(int index, int val, int node, int s, int e) {
+    public void update(int index, int val) {
+        changeDfs(index, val, 0, 0, n - 1);
+    }
+
+    public void changeDfs(int index, int val, int node, int s, int e) {
         if (s == e) {
             tree[node] = val;
             return;
@@ -61,14 +57,20 @@ public class SegmentTree {
 
         int m = s + (e - s) / 2;
         if (index <= m) {
-            change(index, val, node * 2 + 1, s, m);
+            changeDfs(index, val, node * 2 + 1, s, m);
         } else {
-            change(index, val, node * 2 + 2, m + 1, e);
+            changeDfs(index, val, node * 2 + 2, m + 1, e);
         }
 
         // 需要更新节点统计信息
         tree[node] = tree[node * 2 + 1] + tree[node * 2 + 2];
     }
+
+
+    public int sumRange(int left, int right) {
+        return rangeDfs(left, right, 0, 0, n - 1);
+    }
+
 
     /**
      * 查询区间[l, r]上的统计数据
@@ -80,7 +82,7 @@ public class SegmentTree {
      * @param e
      * @return
      */
-    public int range(int l, int r, int node, int s, int e) {
+    public int rangeDfs(int l, int r, int node, int s, int e) {
         if (l == s && r == e) {
             return tree[node];
         }
@@ -88,13 +90,13 @@ public class SegmentTree {
         int m = s + (e - s) / 2;
         if (r <= m) {
             // 位于左节点
-            return range(l, r, node * 2 + 1, s, m);
+            return rangeDfs(l, r, node * 2 + 1, s, m);
         } else if (l > m) {
             // 位于右节点
-            return range(l, r, node * 2 + 2, m + 1, e);
+            return rangeDfs(l, r, node * 2 + 2, m + 1, e);
         } else {
             // 横跨左右节点
-            return range(l, m, node * 2 + 1, s, m) + range(m + 1, r, node * 2 + 2, m + 1, e);
+            return rangeDfs(l, m, node * 2 + 1, s, m) + rangeDfs(m + 1, r, node * 2 + 2, m + 1, e);
         }
     }
 
