@@ -1,10 +1,6 @@
-package org.example.com.base;
+package org.example.com.base.str;
 
-/**
- * https://leetcode-cn.com/problems/implement-strstr/solution/shua-chuan-lc-shuang-bai-po-su-jie-fa-km-tb86/
- * KMP 算法
- */
-public class KMPDemo {
+public class KMP {
     public int strStr(String s, String child) {
         if (child.isEmpty()) {
             return 0;

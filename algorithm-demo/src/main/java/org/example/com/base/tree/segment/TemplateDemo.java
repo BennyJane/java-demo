@@ -22,7 +22,7 @@ public class TemplateDemo<E> {
         }
         // 构建线段树
         tree = (E[]) new Object[n * 4];
-        // 初始化线段树
+        // 初始化线段树，起始状态：根节点位0，区间位 [0, n-1]
         buildSegmentTree(0, 0, n - 1);
     }
 
@@ -103,8 +103,9 @@ public class TemplateDemo<E> {
             ans = queryTreeDfs(leftTreeIndex, l, mid, queryL, queryR);
         } else {
             // 当前区间横跨当前节点
+            // FIXME 注意区间范围
             E leftAns = queryTreeDfs(leftTreeIndex, queryL, mid, queryL, mid);
-            E rightAns = queryTreeDfs(rightTreeIndex, mid + 1, queryR, queryL, mid);
+            E rightAns = queryTreeDfs(rightTreeIndex, mid + 1, queryR, mid + 1, queryR);
             ans = this.merger.merge(leftAns, rightAns);
         }
 

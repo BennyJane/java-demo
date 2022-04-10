@@ -1,4 +1,4 @@
-package org.example.com.base;
+package org.example.com.base.tree.array;
 
 /**
  * 树状数组

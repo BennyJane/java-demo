@@ -35,7 +35,7 @@ public class Demo {
          * 支持增删查改操作， 在list数据量不大情况下使用
          */
         String[] l = new String[2];
-        ArrayList<String> list =new ArrayList<String>(Arrays.asList(l));
+        ArrayList<String> list = new ArrayList<String>(Arrays.asList(l));
         list.add("1");
         System.out.println(list);
     }
@@ -47,8 +47,19 @@ public class Demo {
          */
         String[] l = new String[2];
         ArrayList<String> list = new ArrayList<>(l.length);
-        Collections.addAll(list,l);
+        Collections.addAll(list, l);
         list.add("1");
         System.out.println(list);
+    }
+
+    static void fourEx() {
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+        list.add(74);
+        list.add(3);
+        list.add(2);
+        System.out.println(list.contains(10));
+        System.out.println(list.indexOf(2));
     }
 }
