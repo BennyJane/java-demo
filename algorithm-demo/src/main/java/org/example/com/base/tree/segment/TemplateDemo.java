@@ -76,7 +76,7 @@ public class TemplateDemo<E> {
      * 初始执行入口，即线段树根节点 0 , 区间[0, n-1]
      *
      * @param treeIndex 查询线段树当前节点索引
-     * @param l         线段树当前节点区间左索引
+     * @param l         线段树当前节点区间左索引, 与treeIndex有固定映射关系
      * @param r         线段树当前节点区间右索引
      * @param queryL    查询区间左索引
      * @param queryR    查询区间右索引
@@ -103,9 +103,9 @@ public class TemplateDemo<E> {
             ans = queryTreeDfs(leftTreeIndex, l, mid, queryL, queryR);
         } else {
             // 当前区间横跨当前节点
-            // FIXME 注意区间范围
-            E leftAns = queryTreeDfs(leftTreeIndex, queryL, mid, queryL, mid);
-            E rightAns = queryTreeDfs(rightTreeIndex, mid + 1, queryR, mid + 1, queryR);
+            // FIXME 注意区间范围， treeIndex与l r 有固定映射关系
+            E leftAns = queryTreeDfs(leftTreeIndex, l , mid, queryL, mid);
+            E rightAns = queryTreeDfs(rightTreeIndex, mid + 1, r, mid + 1, queryR);
             ans = this.merger.merge(leftAns, rightAns);
         }
 

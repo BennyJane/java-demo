@@ -12,7 +12,8 @@ public class FenwickTree {
     public FenwickTree(int[] nums) {
         inputData = nums;
         n = nums.length;
-        // 原数组nums中索引和tree数组索引映射关系： indexNum + 1 = treeIndex
+        // 原数组nums中索引和tree数组索引映射关系：
+        // indexNum + 1 = treeIndex
         tree = new int[n + 1];
         for (int i = 0; i < n; i++) {
             add(i + 1, nums[i]);
@@ -27,8 +28,9 @@ public class FenwickTree {
     }
 
     /**
-     * 向树状数组中插入值,每次需要修改[x, n]区间内的值，索引需要通过lowBit重新计算
-     *
+     * 向树状数组中插入值,
+     * 每次需要修改[x, n]区间内的值，
+     * 索引需要通过lowBit重新计算
      * @param x   插入索引
      * @param val 值
      */

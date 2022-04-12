@@ -1,7 +1,6 @@
 package org.example.com.offer.special;
 
 import javafx.util.Pair;
-import org.springframework.scheduling.support.SimpleTriggerContext;
 
 import java.util.*;
 
