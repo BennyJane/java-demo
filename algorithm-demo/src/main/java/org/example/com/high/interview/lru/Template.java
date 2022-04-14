@@ -48,6 +48,7 @@ public class Template {
     public Template(int capacity) {
         // 参数初始化
         this.capacity = capacity;
+        length =0;
         // 每个实例都需要重新生成，清空原来的数据
         map = new HashMap<>();
         // 初始化辅助节点，设置连接关系
