@@ -553,4 +553,676 @@ db.unwind.aggregate([
 ])
 ```
 
+## -------------------------------------------------------------------------------------------------------------------
+## 分割字符串：$split
+
+在`$project`语句中使用，
+
+格式`{"$project": {"name": {"$split": ["$targetName", "分割符"]}}}`
+
+往往需要搭配`$arrayElemAt`方法提取数组指定索引的字段。
+
+```sql
+db.proto_type_entrance_test_info.aggregate ( [ 
+{"$project": {"nodeNames": {"$split": ["$nodeName", "__URL__"]}
+        }},
+{"$project": {
+    "name": "$tag", 
+    "url": {"$arrayElemAt": ["$nodeNames", 1]}, 
+    "url":{ "$toLower": "$url"},
+    "status":1,
+    "_id": 0}}
+])
+```
+
+## 字符串转数值： $convert
+
+```sql
+db.proto_type_entrance_test_info.aggregate ( [ 
+{ "$match" : {"latestBatch" : true}},
+{"$limit": 1},
+{"$project": {"count": {"$convert": {"input": "$buildNumber", "to": "int"}}, "_id": 0}}
+])
+```
+
+## 查询数组大小: $size, $where, $key.index
+
+```sql
+-- 查询指定长度的数组
+-- 无法查询某个范围内的数组; 不能搭配$gt使用
+db.collection.find({"key": {"$size": 2}})
+
+-- $where: 速度较慢； key： 数组名称
+db.collection.find({"$where": "this.key.length < 3")
+-- $exists: 筛选索引存在的数据； 可以用于筛选数组长度范围
+db.collection.find({"key.3": {"$exists" : 1})
+db.collection.find({"key.2": {"$exists" : 0})
+```
+
+##查询每个个分组中的Top N数据: $slice
+
+语法:
+
+```sql
+-- 该函数接收数组参数：目标数组，截取前N个参数
+{"$slice": ["$sortedArray", limitNum]}
+```
+
+查询Top N的逻辑
+
+```sql
+-- 先排序，再分组并借助 $push $$ROOT 保留每个分组的原始数据, 
+-- 然后再使用$slice截取数组一定长度数据
+-- 最后通过$unwind，再次展开数组
+{"$sort"：{"field": 1},
+{"$group"：{"_id": "$targetField", "sortedArray": {"$push": "$$ROOT"}}},
+{"res": {"$slice": ["$array", limitNum]}}
+```
+
+实际应用：
+
+```sql
+db.apk_build_info.aggregate ([
+    {
+		"$match": {
+			"buildStartTimeText": {
+				"$regex": "2021-12-07"
+			}
+		}
+	},
+	{
+		"$project": {
+			"apkName": 1,
+			"taskName": 1,
+			"buildLogUrl": 1,
+			"pipelineUrl": 1,
+			"nickname": 1,
+			"buildStatus": 1,
+			"buildType": 1,
+			"spend": {
+				"$divide": [{
+					"$subtract": ["$buildEndTime", "$buildStartTime"]
+				}, 1000]
+			}
+		}
+	},
+	{
+		"$sort": {
+			"spend": -1
+		}
+	},
+        {
+                "$group": {"_id": "$taskName", "array":{"$push": "$$ROOT"}}
+        },
+	{
+		"$project": {
+			"apkName": 1,
+			"name": "$_id",
+			"value": "$spend",
+			"buildLogUrl": 1,
+			"pipelineUrl": 1,
+                        "rankArr":{"$slice": ["$array", 10]},
+			"_id": 0
+		}
+	},
+       	{
+ 		"$unwind": "$rankArr"
+ 	},
+	{
+		"$project": {
+			"apkName": "$rankArr.apkName",
+			"name": 1,
+			"spend": "$rankArr.spend",
+			"buildLogUrl": "$rankArr.buildLogUrl",
+			"pipelineUrl": "$rankArr.pipelineUrl",
+			"buildType": "$rankArr.buildType"
+		}
+	},
+        {
+            "$sort": {"name": 1, "spend": -1}
+            }
+])
+```
+
+## 解决字符串转时间格式后时差问题：$dateFromString
+
+实际问题：时间格式输入插入mongodb后默认减去8小时，使用`$dateFromString`字符串转时间格式后，会默认加上8小时
+
+语法：
+
+```sql
+
+    $dateFromString: {
+         dateString: <dateStringExpression>,    // 要转换的时间字符串
+         format: <formatStringExpression>,    // 转换的格式，‘%Y-%m-%dT%H:%M:%S.%LZ’
+         timezone: <tzExpression>,    // 指定的时区
+         onError: <onErrorExpression>,    // 报错时输出
+         onNull: <onNullExpression>    // null时输出
+     }
+
+$dateFromString: {
+     dateString: "15-06-2018",
+     format: "%d-%m-%Y"
+}
+```
+
+实际应用
+
+时区格式可以在grafana的时间筛选框底部查找。
+
+```sql
+db.apk_build_info.aggregate ( [
+{"$match": {    
+        "buildStartTimeText":{"$gte": "$endDay"}
+    }
+},
+{
+    "$project": {
+        "_id": 0, 
+       "time": { "$substr": ["$buildStartTimeText", 0, 16] }
+    }
+},
+{"$group": {"_id": "$time",
+
+
+            "count": {"$sum": 1}
+    }},
+{"$project": {"value": "$count","ts": { "$dateFromString": {"dateString": "$_id", "timezone":"Asia/Shanghai"}},"_id" : 0}},
+{"$sort":{"ts": 1}}
+])
+```
+
+
+
+## distinct
+
+```shell
+db.colection.distinct("key", {"key":{"$lte": "2021"}}).length
+```
+
+## -------------------------------------------------------------------------------------------------------------------
+## Grafana内置参数，以及查询Prometheus参数
+参考文章：https://blog.csdn.net/java_4_ever/article/details/108582949
+```sql
+Grafana内置参数
+$__dashboard
+当前dashboard的名称
+
+
+$__from $__to
+时间范围的毫秒值
+可自定义格式,比如:{$__from: date :YYYY-MM-DD HH:mm:ss} {$__from: date :seconds}
+!!! 实际使用中, 前面应该是配置一个下划线
+
+$__interval
+查询的时间间隔,包含单位,比如:30s,2m
+
+$__interval_ms
+查询的时间间隔,毫秒值
+
+$__range
+查询的时间区间大小,包含单位,比如:2d
+
+$__range_s $__range_ms
+查询的时间区间大小,分别是秒数和毫秒数
+
+$__timeFilter
+返回当前选择的时间范围表达式,比如:time > now() -7d,常用于数据库作为datasource的时候.
+
+```
+
+## Grafana 的 Mongo 数据源
+
+https://grafana.com/grafana/plugins/grafana-mongodb-datasource/
+
+#### 已知限制
+
+- 仅支持`find`和`aggregate`读取命令
+- 目前`ISODate`是唯一支持的对象构造函数
+
+#### 查询数据源
+
+查询编辑器支持与 MongoDB Shell 相同的语法，但有一些限制：
+
+- 只能在每个查询中运行一个命令或查询。
+- 仅支持`find`和`aggregate`读取命令。
+- `ISODate` 是唯一受支持的对象构造函数。
+
+#### 附加语法
+
+编辑器通过*数据库选择*扩展了 MongoDB Shell 语法，您可以在其中使用数据库名称而不是`db`. 例如，`sample_mflix.movies.find()`。您仍然可以使用`db`来引用连接字符串中的默认数据库。
+
+它还通过*聚合排序*对其进行了扩展。排序通常发生在聚合管道内。扩展语法上允许`aggregate`类似`find`。例如，`sample_mflix.movies.aggregate({}).sort({"time": 1})`。
+
+> **注意：** MongoDB 不会使用此语法执行排序。排序发生在从集合中查询结果之后。
+
+#### 查询为时间序列
+
+通过将日期字段别名 命名为 `time` 来进行时间序列查询。
+
+**注意**： 可以将非日期字段 强制转换为 日期字段，并将其命名为 `time`来进行时间序列查询。
+
+```sql
+collection.aggregate([
+    {"$match": {"year": {"gt": 2000}}},
+    {"$group": {"_id": "$year", "count": {"$sum": 1}}},
+    {"$project":
+    	{"_id": 0, "count": 1, 
+    	"time": {"$dateFromParts": {"year": "$_id", "month": 2}} }},
+    {"$sort": {"time": 1}}
+])
+
+// 如果要按 Metric对时间序列进行分组,请投影一个名为 的字段__metric。
+// 以下示例使用 显示按电影评级随时间变化的电影计数__metric
+sample_mflix.movies.aggregate([
+{"$match": { "year": {"$gt" : 2000}}},
+{"$group": { 
+    "_id": {
+    	"year":"$year", 
+    	"rated":"$rated"}, 
+    "count": { "$sum": 1 } 
+    }
+},
+{"$project": { 
+    "_id": 0, 
+    "time": { "$dateFromParts": {"year": "$_id.year", "month": 2}},       "__metric": "$_id.rated",
+    "count": 1}}
+]).sort({"time": 1})
+```
+
+
+
+#### 模板和变量
+
+MongoDB 支持复合变量，其中一个变量用作多个变量来执行复杂的多键过滤。
+
+- 通过以下划线 ( `_`)开头每个单独的名称来命名复合变量，例如`_var1_var2`. 不要使用空格。
+- 通过使别名使用由连字符 ( `-`)分隔的相同的单个名称来查询复合变量，例如`val1-val2`.
+- 使用普通变量语法调用您的变量。例如，`$_var1`或`$_var2`。
+
+```sql
+sample_mflix.movies.aggregate([
+    {"$match": {year: {"$gt": 1980}}},
+    {"$project": {"_id": 0, "movie_title": "$title"}} 
+])
+
+sample_mflix.movies.aggregate([
+    {"$match": {year: {"$gt": 1980}}},
+    {"$project": {"_id": 0, "movie_year": {"$concat": ["$title", " - ", {"$toString":"$year"}]}}} 
+])
+// [{"movie-year": "Ted - 2016"}, {"movie-year": "The Terminator - 1985"}]
+```
+
+
+## Mongodb 常用语法
+http://wenote.huawei.com/wapp/pages/view/share/s/0BjYEw1T1h7H2EobsV290UjQ2IDxM026bN7H2zTjsF1Z0M73
+http://wenote.huawei.com/wapp/pages/view/share/s/0BjYEw1T1h7H2EobsV290UjQ1jikdg26Yx7H2zTjsF1Z0M73
+
+
+
+
+
+日期格式数据处理
+日期格式化： $dateToString
+# 日期格式化
+$dateToString: {
+    date: <dateExpression>,
+    format: <formatString>,
+    timezone: <tzExpression>,
+    onNull: <expression>
+} 
+db.build_history_info.aggregate([
+    {
+        $project: {
+            _id: 1, time: { $dateToString: { format: "%Y-%m-%d", date: "$startTime" } },
+        }
+    },
+    { $group: { _id: "$time", count: { $sum: 1 }} },
+    { $sort: { "_id": -1 } }
+])
+$dateFromString
+在aggregate查询中使用
+$dateFromString: {
+     dateString: <dateStringExpression>,    // 要转换的时间字符串
+     format: <formatStringExpression>,    // 转换的格式，‘%Y-%m-%dT%H:%M:%S.%LZ’
+     timezone: <tzExpression>,    // 指定的时区
+     onError: <onErrorExpression>,    // 报错时输出
+     onNull: <onNullExpression>    // null时输出
+ }
+ 
+ $dateFromString: {
+     dateString: "15-06-2018",
+     format: "%d-%m-%Y"
+}
+
+
+字符串操作
+$substr: 只能截取匹配ascII码的数据
+$substrCP:   可以截取中文和字符串
+
+
+加减乘除操作
+db.dev.aggregate([
+    {$match: {size: {$ne:null} } },
+    {$project: {_id:0,title:1,New_Size: {$add:["$size",1] } }
+    }])
+db.dev.aggregate([
+    {$match: {size:{$ne:null}}},
+    {$project: {_id:0,title:1, New_Size: {$subtract:["$size",1]}}
+    }])
+db.dev.aggregate([
+    {$match: {size:{$ne:null}}},
+    {$project: {_id:0,title:1, New_Size: {$multiply:["$size",2]}}
+                  }]) 
+db.dev.aggregate([
+    {$match:{size:{$ne:null}}},
+    {$project:{_id:0,title:1, New_Size: {$divide:["$size",2]}}
+    }])
+    
+ db.dev.aggregate([
+     {$match: {size:{$ne:null}}},
+     {$project: {_id:0,title:1, New_Size: {$mod:["$size",2]}}
+     }])
+连表查询
+https://www.cnblogs.com/xuliuzai/p/10055535.html
+db.getCollection('build_plugin_info').aggregate([
+                  {   // HotaPackage ColdHotPatch
+                      $match: {'pipelineNameEn': 'HotaPackage',
+                          'dataSource': 'cde',
+                          'comboFlag': {$ne: true},
+                          'isOldBuild': {$ne: true},
+                          'hotaVersionType': {$in: ['PRELOAD', 'BASE', 'CUST']},
+                          }
+                  },
+                       {
+                         $lookup: {
+                             from: 'group_user_info',
+                             localField: 'groupId',
+                             foreignField: '_id',
+                             as: 'group_info'
+                             }
+                         },
+                     {
+                         $unwind: '$group_info'
+                         },
+                  {
+                      $project: {
+                          pipelineNameEn: 1, dataSource: 1, emuiProductName: 1, jobId: 1, groupId: 1,
+                          'group_info.name':1,
+                          time: { $substr: ["$startTime", 0, 7] }
+                      }
+                  },
+                  {
+                      $group: {
+                          _id: '$group_info.name',
+                          count: {$sum: 1}
+                          }
+                      },
+                  {$sort: {'_id': -1}}
+                  ]) 
+                  
+
+
+聚合查询 
+https://www.cnblogs.com/nixi8/p/4856746.html
+db.collection.aggregate(pipeline, options);
+pipeline Array
+# 与mysql中的字段对比说明
+$project # 返回哪些字段,select,说它像select其实是不太准确的,因为aggregate是一个阶段性管道操作符,$project是取出哪些数据进入下一个阶段管道操作,真正的最终数据返回还是在group等操作中;
+$match # 放在group前相当于where使用,放在group后面相当于having使用
+$sort # 排序1升-1降 sort一般放在group后,也就是说得到结果后再排序,如果先排序再分组没什么意义;
+$limit # 相当于limit m,不能设置偏移量
+$skip # 跳过第几个文档
+$unwind # 把文档中的数组元素打开,并形成多个文档,参考Example1
+$group: { _id: <expression>, <field1>: { <accumulator1> : <expression1> }, ...  # 按什么字段分组,注意所有字段名前面都要加$,否则mongodb就为以为不加$的是普通常量,其中accumulator又包括以下几个操作符
+# $sum,$avg,$first,$last,$max,$min,$push,$addToSet
+#如果group by null就是 count(*)的效果
+$geoNear # 取某一点的最近或最远,在LBS地理位置中有用
+$out # 把结果写进新的集合中。注意1,不能写进一个分片集合中。注意2,不能写进
+unwind
+> db.test.insert({ "_id" : 1, "item" : "ABC1", sizes: [ "S", "M", "L"] });
+WriteResult({ "nInserted" : 1 })
+> db.test.aggregate( [ { $unwind : "$sizes" } ] )
+{ "_id" : 1, "item" : "ABC1", "sizes" : "S" }
+{ "_id" : 1, "item" : "ABC1", "sizes" : "M" }
+{ "_id" : 1, "item" : "ABC1", "sizes" : "L" }
+db.test.insert({ "_id" : 2, "item" : "ABC1", sizes: [ "S", "M", "L",["XXL",'XL']] });
+WriteResult({ "nInserted" : 1 })
+> db.test.aggregate( [ { $unwind : "$sizes" } ] )
+{ "_id" : 1, "item" : "ABC1", "sizes" : "S" }
+{ "_id" : 1, "item" : "ABC1", "sizes" : "M" }
+{ "_id" : 1, "item" : "ABC1", "sizes" : "L" }
+{ "_id" : 2, "item" : "ABC1", "sizes" : "S" }
+{ "_id" : 2, "item" : "ABC1", "sizes" : "M" }
+{ "_id" : 2, "item" : "ABC1", "sizes" : "L" }
+{ "_id" : 2, "item" : "ABC1", "sizes" : [ "XXL", "XL" ] } # 只能打散一维数组
+example1
+#数据源
+{ "_id" : 1, "item" : "abc", "price" : 10, "quantity" : 2, "date" : ISODate("2014-03-01T08:00:00Z") }
+{ "_id" : 2, "item" : "jkl", "price" : 20, "quantity" : 1, "date" : ISODate("2014-03-01T09:00:00Z") }
+{ "_id" : 3, "item" : "xyz", "price" : 5, "quantity" : 10, "date" : ISODate("2014-03-15T09:00:00Z") }
+{ "_id" : 4, "item" : "xyz", "price" : 5, "quantity" : 20, "date" : ISODate("2014-04-04T11:21:39.736Z") }
+{ "_id" : 5, "item" : "abc", "price" : 10, "quantity" : 10, "date" : ISODate("2014-04-04T21:23:13.331Z") }
+# 综合示例
+db.sales.aggregate([
+  # 由上到下,分阶段的进行,注意该数组中的顺序是有意义的
+  {
+    $project:{item:1,price:1,quantity:1} # 1.取出什么元素待操作;
+  },
+  {
+    $group:{ # 2. 对已取出的元素进行聚合运算;
+      _id:"$item", # 根据什么来分组
+      quantityCount:{$sum:'$quantity'},
+      priceTotal:{$sum:'$price'}
+    }
+  },
+  {
+    $sort:{
+      quantityCount:1 #3.升序
+    }
+  },
+  # 4.基于上面的结果,取倒数第二名
+  {
+    $skip: 2
+  },
+  {
+    $limit:1
+  },
+  # 5.然后把结果写到result集合中
+  {
+    $out:'result'
+  }
+])
+#表达式$month,$dayOfMonth,$year,$sum,$avg
+db.sales.aggregate(
+   [
+      {
+        $group : {
+           _id : { month: { $month: "$date" }, day: { $dayOfMonth: "$date" }, year: { $year: "$date" } }, #按月日年分组
+           totalPrice: { $sum: { $multiply: [ "$price", "$quantity" ] } },
+           averageQuantity: { $avg: "$quantity" },
+           count: { $sum: 1 }
+        }
+      }
+   ]
+)
+#结果
+{ "_id" : { "month" : 3, "day" : 15, "year" : 2014 }, "totalPrice" : 50, "averageQuantity" : 10, "count" : 1 }
+{ "_id" : { "month" : 4, "day" : 4, "year" : 2014 }, "totalPrice" : 200, "averageQuantity" : 15, "count" : 2 }
+{ "_id" : { "month" : 3, "day" : 1, "year" : 2014 }, "totalPrice" : 40, "averageQuantity" : 1.5, "count" : 2 }
+#
+#
+# 表达式$push
+db.sales.aggregate(
+   [
+     {
+       $group:
+         {
+           _id: { day: { $dayOfYear: "$date"}, year: { $year: "$date" } },
+           itemsSold: { $push:  { item: "$item", quantity: "$quantity" } }
+         }
+     }
+   ]
+)
+# result
+{
+   "_id" : { "day" : 46, "year" : 2014 },
+   "itemsSold" : [
+      { "item" : "abc", "quantity" : 10 },
+      { "item" : "xyz", "quantity" : 10 },
+      { "item" : "xyz", "quantity" : 5 },
+      { "item" : "xyz", "quantity" : 10 }
+   ]
+}
+{
+   "_id" : { "day" : 34, "year" : 2014 },
+   "itemsSold" : [
+      { "item" : "jkl", "quantity" : 1 },
+      { "item" : "xyz", "quantity" : 5 }
+   ]
+}
+{
+   "_id" : { "day" : 1, "year" : 2014 },
+   "itemsSold" : [ { "item" : "abc", "quantity" : 2 } ]
+}
+#
+#
+# 表达式$addToSet
+db.sales.aggregate(
+   [
+     {
+       $group:
+         {
+           _id: { day: { $dayOfYear: "$date"}, year: { $year: "$date" } },
+           itemsSold: { $addToSet: "$item" }
+         }
+     }
+   ]
+)
+#result
+{ "_id" : { "day" : 46, "year" : 2014 }, "itemsSold" : [ "xyz", "abc" ] }
+{ "_id" : { "day" : 34, "year" : 2014 }, "itemsSold" : [ "xyz", "jkl" ] }
+{ "_id" : { "day" : 1, "year" : 2014 }, "itemsSold" : [ "abc" ] }
+#
+#
+# 表达式 $first
+db.sales.aggregate(
+   [
+     { $sort: { item: 1, date: 1 } },
+     {
+       $group:
+         {
+           _id: "$item",
+           firstSalesDate: { $first: "$date" }
+         }
+     }
+   ]
+)
+# result
+{ "_id" : "xyz", "firstSalesDate" : ISODate("2014-02-03T09:05:00Z") }
+{ "_id" : "jkl", "firstSalesDate" : ISODate("2014-02-03T09:00:00Z") }
+{ "_id" : "abc", "firstSalesDate" : ISODate("2014-01-01T08:00:00Z") }
+example2
+db.sales.aggregate(
+   [
+      {
+        $group : {
+           _id : null, # 如果为null,就统计出全部
+           totalPrice: { $sum: { $multiply: [ "$price", "$quantity" ] } },
+           averageQuantity: { $avg: "$quantity" },
+           count: { $sum: 1 }
+        }
+      }
+   ]
+)
+# 数据源
+{ "_id" : 8751, "title" : "The Banquet", "author" : "Dante", "copies" : 2 }
+{ "_id" : 8752, "title" : "Divine Comedy", "author" : "Dante", "copies" : 1 }
+{ "_id" : 8645, "title" : "Eclogues", "author" : "Dante", "copies" : 2 }
+{ "_id" : 7000, "title" : "The Odyssey", "author" : "Homer", "copies" : 10 }
+{ "_id" : 7020, "title" : "Iliad", "author" : "Homer", "copies" : 10 }
+# 根据作者分组,获得其著多少书籍
+db.books.aggregate(
+   [
+     { $group : { _id : "$author", books: { $push: "$title" } } }
+   ]
+)
+# result
+{ "_id" : "Homer", "books" : [ "The Odyssey", "Iliad" ] }
+{ "_id" : "Dante", "books" : [ "The Banquet", "Divine Comedy", "Eclogues" ] }
+# 通过系统变量$$ROOT(当前的根文档)来分组
+db.books.aggregate(
+   [
+     { $group : { _id : "$author", books: { $push: "$$ROOT" } } }
+   ]
+)
+# result
+{
+  "_id" : "Homer",
+  "books" :
+     [
+       { "_id" : 7000, "title" : "The Odyssey", "author" : "Homer", "copies" : 10 },
+       { "_id" : 7020, "title" : "Iliad", "author" : "Homer", "copies" : 10 }
+     ]
+}
+{
+  "_id" : "Dante",
+  "books" :
+     [
+       { "_id" : 8751, "title" : "The Banquet", "author" : "Dante", "copies" : 2 },
+       { "_id" : 8752, "title" : "Divine Comedy", "author" : "Dante", "copies" : 1 },
+       { "_id" : 8645, "title" : "Eclogues", "author" : "Dante", "copies" : 2 }
+     ]
+}
+
+
+统计数组中元素的个数
+> db.images.find()
+{ "_id" : 3, "height" : 480, "width" : 640, "tags" : [ "kittens", "travel" ] }
+{ "_id" : 1, "height" : 480, "width" : 640, "tags" : [ "cats", "sunrises", "kittens", "travel", "vacation", "work" ] }
+{ "_id" : 0, "height" : 480, "width" : 640, "tags" : [ "dogs", "work" ] }
+{ "_id" : 6, "height" : 480, "width" : 640, "tags" : [ "work" ] }
+{ "_id" : 4, "height" : 480, "width" : 640, "tags" : [ "dogs", "sunrises", "kittens", "travel" ] }
+{ "_id" : 5, "height" : 480, "width" : 640, "tags" : [ "dogs", "cats", "sunrises", "kittens", "work" ] }
+{ "_id" : 7, "height" : 480, "width" : 640, "tags" : [ "dogs", "sunrises" ] }
+{ "_id" : 8, "height" : 480, "width" : 640, "tags" : [ "dogs", "cats", "sunrises", "kittens", "travel" ] }
+ db.images.aggregate( [ 
+     {$unwind:"$tags"},
+     {$group:
+            {_id:"$tags",
+     num_of_tag:{$sum:1}}},
+     {$project:
+            {_id:0,tags:"$_id",num_of_tag:1}},{$sort:{num_of_tag:-1}} ])
+            
+            
+  db.oneDoc.aggregate([
+    //拆分数组
+    {$unwind:"$tag"},
+    //过滤条件
+    {$match:{creater:'5a4ef79a1c9c2316463a57f4'}},
+    //分组统计
+    {$group:{_id:"$tag",num:{$sum:1}}},
+    //显示字段过滤
+    {$project:{_id:0,tag:"$_id",num:1}},
+    //排序
+    {$sort:{num:-1}}
+])
+查询时间范围
+db.project_entrance_test_info.aggregate ( [ 
+    {
+        "$project": {
+            "_id": 0, 
+           "time": { "$substr": ["$updateTime", 0, 10] }
+        }
+    },
+{"$group": {"_id": "$time"}},
+{"$project": {"_id": {"$concat": ["$_id", " 23:59:59"]}}},
+{"$sort" : {"_id" : -1}}
+])
+
+
+
+
+
+
 
