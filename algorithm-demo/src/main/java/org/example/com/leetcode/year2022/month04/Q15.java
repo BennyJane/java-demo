@@ -12,7 +12,6 @@ public class Q15 {
     private int index = 0;
 
     // 尾递归
-
     public NestedInteger deserialize(String s) {
         // TODO 递归处理模块1： [] 一对中括号
         if (s.charAt(index) == '[') {
@@ -259,4 +258,165 @@ class NestedIterator implements Iterator<Integer> {
     }
 }
 
+/**
+ * 439.三元表达式解析器
+ * https://leetcode-cn.com/problems/ternary-expression-parser/
+ * <p>
+ * T?1:5 标准格式，即长度为5且包含？:时，可以简化
+ * 非? : 长度均为1
+ */
+class Solution {
+    // 使用栈
+    public String parseTernary_Stack(String expression) {
+        Deque<Character> sk = new ArrayDeque<>();
+        // 从后往前遍历，遇到？符号，弹出栈内元素，进行运算并将结果，压入栈内
+        int i = expression.length() - 1;
+        while (i >= 0) {
+            char c = expression.charAt(i);
+            // 非？符号，全部压入栈中
+            if (c != '?') {
+                sk.addLast(c);
+                i--;
+                continue;
+            }
+            // c == ?时，处理[i-1, i, i +1, i+2, i++3] 5个位置组成的三元表达式
+            // ? 左侧为条件
+            char condition = expression.charAt(i - 1);
+            char resTrue = sk.pollLast();   // 从队列末尾获取值
+            // : 符号
+            sk.poll();
+            char resFalse = sk.pollLast();
+            if (condition == 'T') {
+                sk.addLast(resTrue);
+            } else {
+                sk.addLast(resFalse);
+            }
+            // 跳过当前c=?的索引
+            i -= 2;
+        }
 
+        return String.valueOf(sk.poll());
+    }
+
+    /**
+     * 栈：每次处理长度为2的字符组合，从右往左遍历
+     */
+    public String parseTernary_Stack2(String expression) {
+        int n = expression.length();
+        char[] array = expression.toCharArray();
+        Deque<Character> sk = new ArrayDeque<>();
+        // 不能取等号，array[0] 存储最后的结果
+        for (int i = n - 1; i > 0; i -= 2) {
+            char sign = array[i - 1];
+            char c = array[i];
+            if (sign == ':') {
+                sk.addLast(c);
+            } else {
+                // sign = ?
+                char condition = array[i - 2];
+                if (condition == 'T') {
+                    array[i - 2] = c;
+                } else {
+                    array[i - 2] = sk.peekLast();
+                }
+                sk.pollLast();
+            }
+        }
+
+        return String.valueOf(array[0]);
+    }
+
+    // 递归处理：从左往右
+    public String parseTernary(String expression) {
+        int n = expression.length();
+        int checkLevel = 0;
+        // 找到每个? : 平衡区间后，缩小计算范围
+        for (int i = 1; i < n; i++) {
+            char c = expression.charAt(i);
+            if (c == '?') checkLevel++;
+            if (c == ':') checkLevel--;
+            // 一定是在c=:的情况下，checkLevel 递减到0
+            if (checkLevel == 0) {
+                // 此时 c = :，处理前面完整的三元表达式，包含剪枝处理
+                if (expression.charAt(0) == 'T') {
+                    return parseTernary(expression.substring(2, i));
+                } else {
+                    return parseTernary(expression.substring(i + 1, n));
+                }
+            }
+        }
+
+        return expression;
+    }
+
+    public String dfs(String s, int left, int right) {
+        if (left == right) return String.valueOf(s.charAt(left));
+
+        int balance = 0;
+        int balCnt = 0;
+        int index = left;
+        while (index <= right) {
+            if (s.charAt(index) == '?') balance++;
+            if (s.charAt(index) == ':') balance--;
+            // 找到左侧第一组平衡位置: index指向：符号
+            if (balance == 0 && balCnt == 1) {
+                break;
+            }
+            if (balance == 0) {
+                balCnt++;
+            }
+            index++;
+        }
+        char condition = s.charAt(left);
+        return condition == 'T' ? dfs(s, left + 2, index - 1) : dfs(s, index+1, right);
+
+    }
+
+    public String parseTernary1(String expression) {
+        return dfs(expression, 0, expression.length() -1);
+    }
+
+    // FIXME 从左往右遍历，无法正确分离每组三元表达式
+
+    public static void main(String[] args) {
+        Solution s = new Solution();
+        String e = "T?T:F?T?1:2:F?3:4";
+//        String e = "F?T:F?T?1:2:F?3:4";
+        s.parseTernary_Stack(e);
+    }
+}
+
+/**
+ * 722. 删除注释
+ * https://leetcode-cn.com/problems/remove-comments/
+ */
+class Solution2 {
+    public List<String> removeComments(String[] source) {
+        boolean inBlock = false;
+        StringBuilder newline = new StringBuilder();
+        List<String> ans = new ArrayList();
+        for (String line : source) {
+            int i = 0;
+            char[] chars = line.toCharArray();
+            if (!inBlock) newline = new StringBuilder();
+            while (i < line.length()) {
+                if (!inBlock && i + 1 < line.length() && chars[i] == '/' && chars[i + 1] == '*') {
+                    inBlock = true;
+                    i++;
+                } else if (inBlock && i + 1 < line.length() && chars[i] == '*' && chars[i + 1] == '/') {
+                    inBlock = false;
+                    i++;
+                } else if (!inBlock && i + 1 < line.length() && chars[i] == '/' && chars[i + 1] == '/') {
+                    break;
+                } else if (!inBlock) {
+                    newline.append(chars[i]);
+                }
+                i++;
+            }
+            if (!inBlock && newline.length() > 0) {
+                ans.add(new String(newline));
+            }
+        }
+        return ans;
+    }
+}

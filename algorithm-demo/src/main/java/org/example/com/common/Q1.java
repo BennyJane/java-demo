@@ -36,8 +36,33 @@ public class Q1 {
         }
     }
 
+    /**
+     * 遍历给定数值的所有因子
+     * 判断是否为质数
+     */
+    private static void method2() {
+        int target = 1523;
+
+        boolean flag = true;
+        int start = 2;
+        // 只遍历start <= 另一个因数的情况
+        while (start * start <= target) {
+            if (target % start == 0) {
+                System.out.println("存在因数： " + start + ", " + target / start);
+                // target 不是质数，存在非1、target的因数
+                flag = false;
+            }
+            start++;
+        }
+        if (flag) {
+            System.out.println(target + " 是质数.");
+        }
+
+    }
 
     public static void main(String[] args) {
-        method1();
+//        method1();
+
+        method2();
     }
 }
