@@ -20,5 +20,8 @@ public class ComDemo {
         System.out.println(Arrays.asList(res));
         res = str.split("n|\\？");
         System.out.println(Arrays.asList(res));
+
+        boolean flag = str.contains("jane");
+        System.out.println(flag);
     }
 }

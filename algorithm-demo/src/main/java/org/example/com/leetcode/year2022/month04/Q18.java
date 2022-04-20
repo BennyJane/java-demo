@@ -1,9 +1,6 @@
 package org.example.com.leetcode.year2022.month04;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * https://leetcode-cn.com/problems/lexicographical-numbers/
@@ -104,18 +101,8 @@ class Solution1 {
     public List<Integer> lexicalOrder(int n) {
         List<Integer> ans=new ArrayList<>();
         for(int i=1;i<=n;i++){ans.add(i);}
-        Collections.sort(ans,(a, b)->isBefore(String.valueOf(a),String.valueOf(b)));
+        Collections.sort(ans, Comparator.comparing(String::valueOf));
+        //Collections.sort(ans, (a ,b ) -> String.valueOf(a).compareTo(String.valueOf(b)));
         return ans;
-    }
-    public int isBefore(String s1,String s2){
-        if(s1.length()<=s2.length()){
-            for(int i=0;i<s1.length();i++){
-                char c1=s1.charAt(i),c2=s2.charAt(i);
-                if(c1<c2){return -1;}
-                if(c1>c2){return 1;}
-            }
-            return -1;
-        }
-        return -isBefore(s2,s1);
     }
 }
