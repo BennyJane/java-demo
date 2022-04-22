@@ -1,4 +1,4 @@
-package org.example.com.volatileDemo;
+package org.example.com.features.volatile_;
 
 public class ThreadTest implements Runnable {
 

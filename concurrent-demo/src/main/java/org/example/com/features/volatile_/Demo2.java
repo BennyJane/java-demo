@@ -1,4 +1,4 @@
-package org.example.com.volatileDemo;
+package org.example.com.features.volatile_;
 
 /**
  * 执行结果可能为 (1,0) (0,1) (1,1) (0,0)

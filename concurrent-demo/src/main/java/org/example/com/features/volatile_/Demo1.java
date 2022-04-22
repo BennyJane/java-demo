@@ -1,4 +1,4 @@
-package org.example.com.volatileDemo;
+package org.example.com.features.volatile_;
 
 import java.util.Date;
 import java.util.concurrent.CountDownLatch;

@@ -1,4 +1,4 @@
-package org.example.com.middle;
+package org.example.com.features.completablefuture;
 
 import java.util.concurrent.*;
 
@@ -47,7 +47,7 @@ class T2Task implements Callable<String> {
 }
 
 
-public class Demo01 {
+public class TeaDemo {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         method1();
 

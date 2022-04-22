@@ -1,6 +1,8 @@
 package org.example.com.high.interview.base;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class countEval {
@@ -88,28 +90,36 @@ class Solution2 {
         for (int i = 1; i < s.length(); i += 2) {
             char sign = s.charAt(i);
             if (result == 0) {
+                // TODO 起到减枝，筛选的功能
                 if (sign == '&') {
+                    //结果为0 有三种情况： 0 0, 0 1, 1 0
                     ans += countEval(s.substring(0, i), 0) * countEval(s.substring(i + 1), 0);
                     ans += countEval(s.substring(0, i), 1) * countEval(s.substring(i + 1), 0);
                     ans += countEval(s.substring(0, i), 0) * countEval(s.substring(i + 1), 1);
                 }
                 if (sign == '|') {
+                    //结果为0 有一种情况： 0 0
                     ans += countEval(s.substring(0, i), 0) * countEval(s.substring(i + 1), 0);
                 }
                 if (sign == '^') {
+                    //结果为0 有两种情况： 0 0, 1 1
                     ans += countEval(s.substring(0, i), 1) * countEval(s.substring(i + 1), 1);
                     ans += countEval(s.substring(0, i), 0) * countEval(s.substring(i + 1), 0);
                 }
             } else {
                 if (sign == '&') {
+                    //结果为1 有一种情况： 1 1
                     ans += countEval(s.substring(0, i), 1) * countEval(s.substring(i + 1), 1);
                 }
                 if (sign == '|') {
+
+                    //结果为1 有三种情况： 0 1, 1 0, 1 1
                     ans += countEval(s.substring(0, i), 0) * countEval(s.substring(i + 1), 1);
                     ans += countEval(s.substring(0, i), 1) * countEval(s.substring(i + 1), 1);
                     ans += countEval(s.substring(0, i), 1) * countEval(s.substring(i + 1), 0);
                 }
                 if (sign == '^') {
+                    //结果为1 有两种情况： 0 1, 1 0
                     ans += countEval(s.substring(0, i), 1) * countEval(s.substring(i + 1), 0);
                     ans += countEval(s.substring(0, i), 0) * countEval(s.substring(i + 1), 1);
                 }
@@ -280,5 +290,181 @@ class Solution4 {
     public static void main(String[] args) {
         Solution4 s = new Solution4();
         s.countEval2("1^0|0|1|0", 0);
+    }
+}
+
+class Solution6 {
+    public int countEval(String s, int result) {
+        int[] res = dfs(s);
+        return res[result];
+    }
+
+    // 直接统计String对应的List<Integer>集合，会造成内存溢出
+    // TODO 修改缓存方案：只统计结果0、1的计算数量
+    private Map<String, int[]> map = new HashMap<>();
+    private int[] dfs(String s) {
+        int n = s.length();
+        int[] ans = new int[2];
+
+        if (n == 1) {
+            int cur = s.charAt(0) - '0';
+            ans[cur]++;
+            return ans;
+        }
+
+        if (map.containsKey(s)) return map.get(s);
+
+        for (int i = 1; i < n; i += 2) {
+            char c = s.charAt(i);
+            int[] left = dfs(s.substring(0, i));
+            int[] right = dfs(s.substring(i + 1, n));
+
+            if (c == '&') {
+                ans[0] += left[0] * right[0] + left[1] * right[0] + left[0] * right[1];
+                ans[1] += left[1] * right[1];
+            }
+            if (c == '|') {
+                ans[0] += left[0] * right[0];
+                ans[1] += left[1] * right[1] + left[1] * right[0] + left[0] * right[1];
+            }
+            if (c == '^') {
+                ans[0] += left[0] * right[0] + left[1] * right[1];
+                ans[1] += left[1] * right[0] + left[0] * right[1];
+            }
+        }
+        map.put(s, ans);
+
+        return ans;
+    }
+
+
+}
+
+//241. 为运算表达式设计优先级
+class Solution5 {
+    // 数字长度不定，需要处理
+    public List<Integer> diffWaysToCompute(String expression) {
+        int n = expression.length();
+        List<Integer> ans = new ArrayList<Integer>();
+        // 长度为0： 不存在长度为0的情况
+        // 判断是否包含特殊符号 ==》 判读是否为纯数字
+        // TODO 效率非常低
+        if (expression.split("\\+|-|\\*").length == 1) {
+            ans.add(Integer.parseInt(expression));
+            return ans;
+        }
+
+
+        for (int i = 0; i < n; i++) {
+            char c = expression.charAt(i);
+            if (Character.isDigit(c)) {
+                continue;
+            }
+            List<Integer> left = diffWaysToCompute(expression.substring(0, i));
+            List<Integer> right = diffWaysToCompute(expression.substring(i + 1, n));
+            for (int l : left) {
+                for (int r : right) {
+                    switch (c) {
+                        case '+':
+                            ans.add(l + r);
+                            break;
+                        case '-':
+                            ans.add(l - r);
+                            break;
+                        case '*':
+                            ans.add(l * r);
+                            break;
+                    }
+                }
+            }
+        }
+
+        return ans;
+    }
+
+    public List<Integer> diffWaysToCompute1(String expression) {
+        List<Integer> ans = new ArrayList<>();
+
+        int n = expression.length();
+        // 获取首个数字
+        int num = 0;
+        boolean isNum = true;
+        for (int i = 0; i < n; i++) {
+            char c = expression.charAt(i);
+            if (Character.isDigit(c)) {
+                if (isNum) {
+                    num = num * 10 + c - '0';
+                }
+                continue;
+            }
+            // 包含运算符
+            isNum = false;
+            List<Integer> left = diffWaysToCompute1(expression.substring(0, i));
+            List<Integer> right = diffWaysToCompute1(expression.substring(i + 1, n));
+            for (int l : left) {
+                for (int r : right) {
+                    if (c == '+') {
+                        ans.add(l + r);
+                    } else if (c == '-') {
+                        ans.add(l - r);
+                    } else {
+                        ans.add(l * r);
+                    }
+                }
+            }
+        }
+
+        // 如果输入字符串为纯数字，直接返回该数字
+        if (isNum) {
+            ans.add(num);
+        }
+
+        return ans;
+    }
+
+
+    private static Map<String, List<Integer>> cache = new HashMap<>();
+
+    public List<Integer> diffWaysToCompute2(String expression) {
+        List<Integer> ans = new ArrayList<>();
+        if (cache.containsKey(expression)) {
+            return cache.get(expression);
+        }
+        ;
+        // 获取首个数字
+        int num = 0;
+        boolean isNum = true;
+        for (int i = 0; i < expression.length(); i++) {
+            char c = expression.charAt(i);
+            if (Character.isDigit(c)) {
+                if (isNum) {
+                    num = num * 10 + c - '0';
+                }
+                continue;
+            }
+            // 包含运算符
+            isNum = false;
+            List<Integer> left = diffWaysToCompute1(expression.substring(0, i));
+            List<Integer> right = diffWaysToCompute1(expression.substring(i + 1, expression.length()));
+            for (int l : left) {
+                for (int r : right) {
+                    if (c == '+') {
+                        ans.add(l + r);
+                    } else if (c == '-') {
+                        ans.add(l - r);
+                    } else {
+                        ans.add(l * r);
+                    }
+                }
+            }
+        }
+
+        // 如果输入字符串为纯数字，直接返回该数字
+        if (isNum) {
+            ans.add(num);
+        }
+
+        cache.put(expression, ans);
+        return ans;
     }
 }
