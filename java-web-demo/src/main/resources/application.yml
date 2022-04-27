@@ -1,0 +1,22 @@
+server:
+  port: 8088
+  servlet:
+    session:
+      timeout: 30
+  tomcat:
+    uri-encoding: UTF-8
+
+spring:
+  profiles:
+    active: dev
+
+
+# 自定义变量
+name: "Benny Jane"
+country: China
+
+custom:
+  person:
+    name: benny-jane
+    age: 100
+
