@@ -14,6 +14,8 @@
         <module>concurrent-demo</module>
         <module>java-design-pattern-demo</module>
         <module>java-web-demo</module>
+        <module>java-plugin-demo</module>
+        <module>java-spi-demo</module>
     </modules>
 
 

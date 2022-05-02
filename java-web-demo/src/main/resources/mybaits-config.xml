@@ -4,35 +4,54 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <!-- 根标签 -->
 <configuration>
+
+    <settings>
+        <!-- 打印sql日志 -->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+        <!--        <setting name="cacheEnable" value="true"/>-->
+    </settings>
+
+    <plugins>
+        <plugin interceptor="com.benny.jane.plugins.QueryPlugin">
+            <!-- 插件属性 -->
+            <property name="dbType" value="mysql"/>
+        </plugin>
+    </plugins>
+
     <!-- 环境，可以配置多个，default：指定采用哪个环境 -->
     <environments default="test">
         <!-- id：唯一标识 -->
         <environment id="test">
             <!-- 事务管理器，JDBC类型的事务管理器 -->
-            <transactionManager type="JDBC" />
+            <transactionManager type="JDBC"/>
             <!-- 数据源，池类型的数据源 -->
             <dataSource type="POOLED">
-                <property name="driver" value="com.mysql.jdbc.Driver" />
-                <property name="url" value="jdbc:mysql://192.168.1.20:3306/test_db" />
-                <property name="username" value="root" />
-                <property name="password" value="123456" />
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://192.168.1.20:3306/test_db"/>
+                <property name="username" value="root"/>
+                <property name="password" value="123456"/>
             </dataSource>
         </environment>
         <environment id="development">
             <!-- 事务管理器，JDBC类型的事务管理器 -->
-            <transactionManager type="JDBC" />
+            <transactionManager type="JDBC"/>
             <!-- 数据源，池类型的数据源 -->
             <dataSource type="POOLED">
-                <property name="driver" value="${driver}" /> <!-- 配置了properties，所以可以直接引用 -->
-                <property name="url" value="${url}" />
-                <property name="username" value="${username}" />
-                <property name="password" value="${password}" />
+                <property name="driver" value="${driver}"/> <!-- 配置了properties，所以可以直接引用 -->
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
             </dataSource>
         </environment>
     </environments>
 
 
+    <mappers>
+        <mapper resource="./mappers/MyMapper.xml"/>
+    </mappers>
 <!--    <mappers>-->
-<!--        <mapper resource="mappers/MyMapper.xml"></mapper>-->
+<!--        <package name="com.benny.jane.mapper"/>-->
 <!--    </mappers>-->
 </configuration>
+
+
