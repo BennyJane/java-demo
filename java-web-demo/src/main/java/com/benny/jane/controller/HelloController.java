@@ -1,6 +1,8 @@
 package com.benny.jane.controller;
 
 import com.benny.jane.result.Result;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,8 @@ import java.util.concurrent.TimeUnit;
 @RestController
 public class HelloController {
 
+    private Logger logger = LoggerFactory.getLogger(HelloController.class);
+
     @RequestMapping("/hello")
     public String sayHello() {
         return "Hello, world!";
@@ -22,12 +26,18 @@ public class HelloController {
 
     @RequestMapping("/hello/json")
     public Result sayJson(String name) {
+
+        logger.info("/hello/json  " + name);
+
         return Result.okResult(name);
     }
 
     @RequestMapping("/cache")
     public ResponseEntity<String> cache(@RequestParam String id) {
         String msg = MessageFormat.format("ID is {1}", id);
+
+        logger.info(msg);
+
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Test-Example-Header", "Value-ResponseEntityBuilderWithHttpHeaders");

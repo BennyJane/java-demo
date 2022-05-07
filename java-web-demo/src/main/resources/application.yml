@@ -19,4 +19,6 @@ custom:
   person:
     name: benny-jane
     age: 100
-
+logging:
+  level:
+    root: info

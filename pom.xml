@@ -14,7 +14,6 @@
         <module>concurrent-demo</module>
         <module>java-design-pattern-demo</module>
         <module>java-web-demo</module>
-        <module>java-plugin-demo</module>
         <module>java-spi-demo</module>
     </modules>
 
@@ -24,6 +23,23 @@
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>2.0.0</version>
+        </dependency>
+
+        <!--集成 logstash 日志-->
+<!--        <dependency>-->
+<!--            <groupId>net.logstash.logback</groupId>-->
+<!--            <artifactId>logstash-logback-encoder</artifactId>-->
+<!--        </dependency>-->
+        <!--集成 logback-elasticsearch, 直接写入ES-->
+        <dependency>
+            <groupId>com.internetitem</groupId>
+            <artifactId>logback-elasticsearch-appender</artifactId>
+            <version>1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>4.11</version>
         </dependency>
     </dependencies>
 

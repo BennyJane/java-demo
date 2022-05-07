@@ -4,6 +4,8 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Properties;
@@ -18,6 +20,8 @@ import java.util.concurrent.Executor;
                         RowBounds.class,
                         ResultHandler.class})})
 public class QueryPlugin implements Interceptor {
+
+    private Logger logger = LoggerFactory.getLogger(QueryPlugin.class);
 
     // 实际执行方法
     @Override
@@ -34,8 +38,13 @@ public class QueryPlugin implements Interceptor {
     // 生成一个拦截器对象，丢到拦截器链中
     @Override
     public Object plugin(Object target) {
-        System.out.println("将要包装的目标对象" + target);
-        return Plugin.wrap(target, this);
+        logger.info("将要包装的目标对象" + target);
+
+        if (target instanceof Executor) {
+            return Plugin.wrap(target, this);
+        } else {
+            return target;
+        }
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.benny.jane.controller;
 
 import com.benny.jane.entity.User;
 import com.benny.jane.mapper.UserMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +14,8 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
+    private static Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     UserMapper userMapper;
 
@@ -19,7 +23,7 @@ public class UserController {
     List<User> getList() {
         List<User> users = userMapper.queryAll();
         for (User u : users) {
-            System.out.println(u.toString());
+            logger.info(u.toString());
         }
         return users;
     }
@@ -28,7 +32,7 @@ public class UserController {
     @RequestMapping("/query")
     User queryById(int id) {
         User user = userMapper.queryById(id);
-        System.out.println(user.toString());
+        logger.info(user.toString());
         return user;
     }
 
