@@ -15,6 +15,7 @@
         <module>java-design-pattern-demo</module>
         <module>java-web-demo</module>
         <module>java-spi-demo</module>
+        <module>java-nio-demo</module>
     </modules>
 
 

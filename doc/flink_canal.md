@@ -1,4 +1,4 @@
-## 优化 
+## 优化
 https://www.cnblogs.com/duanxz/p/4388546.html
 
 800~900ms -》 100ms
@@ -6,7 +6,7 @@ https://www.cnblogs.com/duanxz/p/4388546.html
 {"op": "command", "ns": "kanban-data.package_define_record", "command": "{N}", "keysExamined": 58882, "docsExamined": 18, "cursorExhausted": true, "numYield": 460, "nreturned": 1, "locks": {"Global": {"acquireCount": {"r": 462}}, "Database": {"acquireCount": {"r": 462}}, "Collection": {"acquireCount": {"r": 462}}}, "responseLength": 543, "protocol": "op_msg", "millis": 109, "planSummary": "IXSCAN { pipelineTime: -1, parentPipelineId: 1, pipelineName: 1 }", "ts": {"$date": 1648310385839}, "client": "192.168.6.147", "allUsers": [{"user": "__system", "db": "local"}], "user": "__system@local"}
 
 
-### 【hadoop】 
+### 【hadoop】
 #--------------------------------------------------------------------
 mkdir -p /mnt/disk/data/hadoop/hdfs/name/
 mkdir -p /mnt/disk/data/hadoop/hdfs/data/
@@ -35,7 +35,7 @@ scp -r hadoop-2.8.0/ root@10.247.14.167:`pwd`
 
 
 
-### 【hadoop: 初始化失败】 
+### 【hadoop: 初始化失败】
 #--------------------------------------------------------------------
 格式化 NameNode 提示 SHUTDOWN_MSG: Shutting down NameNode at xxx/xxx.xxx.xxx.xxx
 
@@ -49,15 +49,15 @@ https://www.jianshu.com/p/e50307229c68
 set -x
 
 if [[ ! -d "/mnt/disk/data/" ]]; then
-        rm -r /mnt/disk/data/*
+rm -r /mnt/disk/data/*
 fi
 
 if [[ ! -d "/mnt/disk/tmp/hadoop/" ]]; then
-           rm -r /mnt/disk/tmp/hadoop/*
+rm -r /mnt/disk/tmp/hadoop/*
 fi
 
 if [[ ! -d "/mnt/disk/hadoop-2.8.0/logs/" ]]; then
-   rm -r /mnt/disk/hadoop-2.8.0/logs/*
+rm -r /mnt/disk/hadoop-2.8.0/logs/*
 fi
 
 mkdir -p /mnt/disk/data/hadoop/hdfs/name/
@@ -67,7 +67,7 @@ mkdir -p /mnt/disk/data/hadoop/hdfs/data/
 【03 HDFS各节点常用端口】
 https://blog.csdn.net/old_six_laobadaola/article/details/78482591?utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~aggregatepage~first_rank_ecpm_v1~rank_v31_ecpm-3-78482591.pc_agg_new_rank&utm_term=hdfs8032%E7%AB%AF%E5%8F%A3%E6%B2%A1%E6%9C%89%E7%9B%91%E5%90%AC&spm=1000.2123.3001.4430
 
-### 【flink: yarn集群启动报错】 
+### 【flink: yarn集群启动报错】
 #--------------------------------------------------------------------
 
 /mnt/disk/flink-1.7.0/bin/yarn-session.sh -s 2 -tm 800 -n 2
@@ -87,7 +87,7 @@ https://blog.csdn.net/old_six_laobadaola/article/details/78482591?utm_medium=dis
 # 常见问题
 https://blog.csdn.net/hzyice/article/details/106966880?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_title~default-8.pc_relevant_default&spm=1001.2101.3001.4242.5&utm_relevant_index=11
 
-### 【flink:yarn启动后效果】 
+### 【flink:yarn启动后效果】
 #--------------------------------------------------------------------
 
 
@@ -127,7 +127,7 @@ yarn application -kill application_1648107250448_0003
 yarn application -kill application_1648111894111_0004
 
 
-### 【flink: 测试案例】 
+### 【flink: 测试案例】
 #--------------------------------------------------------------------
 # 提交一个flink程序到yarn集群
 # 参考文章： https://blog.csdn.net/qq_42761569/article/details/107385947
@@ -147,7 +147,7 @@ yarn application -kill application_1648111894111_0004
 
 
 
-### 【canal: 安装】 
+### 【canal: 安装】
 #--------------------------------------------------------------------
 ## 安装教程
 #  https://blog.csdn.net/wsdc0521/article/details/108727632?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_title~default-0.pc_relevant_paycolumn_v3&spm=1001.2101.3001.4242.1&utm_relevant_index=3
@@ -158,31 +158,31 @@ Web： http://10.247.14.105:3000
 登录密码： admin 123456
 
 
-### 【canal配置】 
+### 【canal配置】
 #--------------------------------------------------------------------
 ## 新建Instance https://blog.csdn.net/yabingshi_tech/article/details/109642371
 
-mysql 数据解析关注的表，Perl正则表达式.多个正则之间以逗号(,)分隔，转义符需要双斜杠(\\) 
+mysql 数据解析关注的表，Perl正则表达式.多个正则之间以逗号(,)分隔，转义符需要双斜杠(\\)
 常见例子：
 1. 所有表：.* or .*\\..*
 2. canal schema下所有表： canal\\..*
 3. canal下的以canal打头的表：canal\\.canal.*
 4. canal schema下的一张表：canal.test1
 5. 多个规则组合使用：canal\\..*,mysql.test1,mysql.test2 (逗号分隔)
-注意：此过滤条件只针对row模式的数据有效(ps. mixed/statement因为不解析sql，所以无法准确提取tableName进行过滤)
+   注意：此过滤条件只针对row模式的数据有效(ps. mixed/statement因为不解析sql，所以无法准确提取tableName进行过滤)
 
 # filter 配置
 canal.instance.filter.regex=.*\\..*
 【监听所有表】.*\\..\*
 【监听指定库下所有表】{库名称}\.*
-【监听单表】{库名}.{表名} 
+【监听单表】{库名}.{表名}
 【多规则组合使用，使用逗号分隔】test\\..*, test_db.test_table
 
 # 配置黑名单，即不监听内容
 canal.instance.filter.black.regex =
 
 
-### 【kafka配置】 
+### 【kafka配置】
 #--------------------------------------------------------------------
 
 # auto.offset.reset
@@ -197,12 +197,12 @@ topic各分区都存在已提交的offset时，从offset后开始消费；只要
 
 默认建议用earliest。设置该参数后 kafka出错后重启，找到未消费的offset可以继续消费。
 
-而latest 这个设置容易丢失消息，假如kafka出现问题，还有数据往topic中写，这个时候重启kafka，这个设置会从最新的offset开始消费,中间出问题的哪些就不管了。 
+而latest 这个设置容易丢失消息，假如kafka出现问题，还有数据往topic中写，这个时候重启kafka，这个设置会从最新的offset开始消费,中间出问题的哪些就不管了。
 none这个设置没有用过，兼容性太差，经常出问题。
 
 
 
-### 【mongo-driver: 操作mongoDB数据库 】 
+### 【mongo-driver: 操作mongoDB数据库 】
 #--------------------------------------------------------------------
 ## 3.8版本官网 http://mongodb.github.io/mongo-java-driver/3.8/driver/tutorials/bulk-writes/
 ## 批量操作： https://www.cnblogs.com/cnwcl/p/15359962.html

@@ -1,0 +1,136 @@
+## assembly/zip.xml
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+    <id>zip</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <directory>${project.basedir}/FrontSetting/${curPlugin.name}</directory>
+            <!-- 重新定义打包后的目录层级 -->
+            <outputDirectory>/${curPlugin.name}</outputDirectory>
+        </fileSet>
+    </fileSets>
+    <files>
+        <file>
+            <!-- 定义原始的jar文件名称 -->
+            <!--            <source> ${project.build.directory}/${project.artifactId}-${project.version}.jar</source>-->
+            <source>${project.build.directory}/${curPlugin.name}-${curPlugin.version}.jar</source>
+            <!-- 定义zip包中的位置，并重新命名 -->
+            <outputDirectory>/${curPlugin.name}/src</outputDirectory>
+            <destName>${curPlugin.name}-${curPlugin.version}.jar</destName>
+        </file>
+    </files>
+</assembly>
+
+        ##
+
+        <!-- 定义插件信息: 打包生成zip的插件 -->
+<properties>
+<!-- 插件目录 -->
+<curPlugin.classPathDir>com.huawei.pluginmarket.plugins</curPlugin.classPathDir>
+
+<!-- ==================================== [Plugin] ========================================= -->
+<!--        <curPlugin.name>MobiusPackage</curPlugin.name>-->
+<!--        <curPlugin.version>0.0.3</curPlugin.version>-->
+<!-- 插件类路径： FIXME 考虑使用同一个类名称 -->
+<!--        <curPlugin.classPath>${curPlugin.classPathDir}.mobiuspackage.MobiusPackage</curPlugin.classPath>-->
+
+<curPlugin.version>0.0.2</curPlugin.version>
+<curPlugin.name>CreatePatch</curPlugin.name>
+<curPlugin.classPath>${curPlugin.classPathDir}.createpatch.${curPlugin.name}</curPlugin.classPath>
+</properties>
+
+<build>
+<plugins>
+    <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+            <archive>
+                <!-- 自定义descriptor： 主入口函数，该参数为必填项(测试，不是必填项)； 在当前场景下没有意义，可删除 -->
+                <manifest>
+                    <mainClass>com.huawei.pluginmarket.emuibuild</mainClass>
+                </manifest>
+            </archive>
+            <!-- 自定义descriptor： 描述发布具体格式 -->
+            <descriptors>
+                <descriptor>src/main/assembly/zip.xml</descriptor>
+            </descriptors>
+            <!-- 内置descriptor： jar-with-dependencies 、code 、 src  -->
+            <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+            </descriptorRefs>
+            <appendAssemblyId>false</appendAssemblyId>
+        </configuration>
+        <executions>
+            <execution>
+                <id>make-assembly</id>
+                <phase>package</phase>
+                <goals>
+                    <goal>single</goal>
+                </goals>
+                <configuration>
+                    <!-- 打包文件不添加id后缀 -->
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <!-- 自定义打包后jar 与 zip 包的名称； 默认使用项目的 ${artifactId}-${version}.jar -->
+                    <!--                                                        <finalName>${curPlugin.name}-${curPlugin.version}</finalName>-->
+                </configuration>
+            </execution>
+        </executions>
+    </plugin>
+    <!--            <plugin>-->
+    <!--                <groupId>org.apache.maven.plugins</groupId>-->
+    <!--                <artifactId>maven-compiler-plugin</artifactId>-->
+    <!--                <configuration>-->
+    <!--                    <source>8</source>-->
+    <!--                    <target>8</target>-->
+    <!--                    <encoding>UTF-8</encoding>-->
+    <!--                </configuration>-->
+    <!--            </plugin>-->
+    <!-- maven-surefire-plugin：与测试框架有关-->
+    <!--            <plugin>-->
+    <!--                <groupId>org.apache.maven.plugins</groupId>-->
+    <!--                <artifactId>maven-surefire-plugin</artifactId>-->
+    <!--                <version>2.20</version>-->
+    <!--                <configuration>-->
+    <!--                    <skipTests>true</skipTests>-->
+    <!--                </configuration>-->
+    <!--            </plugin>-->
+</plugins>
+<!-- 自定义最后jar包名称； 默认使用项目的 ${artifactId}-${version}.jar
+ build.finalName: 影响内部具体plugin打包的jar包名称
+ -->
+<finalName>${curPlugin.name}-${curPlugin.version}</finalName>
+<!-- 默认jar包名称 -->
+<!--                <finalName>${project.artifactId}-${project.version}221</finalName>-->
+<!-- resources配置信息 -->
+<resources>
+    <resource>
+        <!-- resources配置信息： src前面不能有/符号 -->
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+            <include>plugin.properties</include>
+        </includes>
+    </resource>
+</resources>
+</build>
+        <!-- resources配置信息 -->
+<profiles>
+<profile>
+    <id>dev</id>
+    <properties>
+        <!-- 环境标识，需要与配置文件的名称相对应 -->
+        <plugin.class.path>${curPlugin.classPath}</plugin.class.path>
+        <plugin.id>${curPlugin.name}</plugin.id>
+    </properties>
+    <activation>
+        <!-- 默认环境 -->
+        <activeByDefault>true</activeByDefault>
+    </activation>
+</profile>
+</profiles>
