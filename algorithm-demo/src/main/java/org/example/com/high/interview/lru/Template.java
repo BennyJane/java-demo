@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * put：
  *  - 新增节点，需要同时在链表、map中同时新增；
- *  - 更新节点：只需要更新node的值
+ *  - 更新节点：更新node的值，并启动到首部
  *  - 新增节点，超出capacity时，需要同时删除链表末尾元素，map中key:node
  */
 public class Template {

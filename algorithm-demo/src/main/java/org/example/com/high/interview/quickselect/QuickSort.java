@@ -25,7 +25,7 @@ public class QuickSort {
         if (l >= r) {
             return;
         }
-        // nextInt: 返回值范围 (0 , bound) 两个端点都i不会取
+        // nextInt: 返回值范围 (0 , bound) 两个端点都不会取
         // FIXME： 随机值 + 左端点索引（不是1）
         int randomIndex = new Random().nextInt(r - l + 1) + l;
         swap(arr, randomIndex, r);

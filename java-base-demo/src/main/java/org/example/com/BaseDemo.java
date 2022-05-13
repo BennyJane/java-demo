@@ -1,6 +1,7 @@
 package org.example.com;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class BaseDemo {
@@ -14,6 +15,8 @@ public class BaseDemo {
     public static void main(String[] args) {
         BaseDemo baseDemo = new BaseDemo();
         baseDemo.funcExc();
+
+        LinkedList list = new LinkedList();
     }
 
     private void funcExc() {
