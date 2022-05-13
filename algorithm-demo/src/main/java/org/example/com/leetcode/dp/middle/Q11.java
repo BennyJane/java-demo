@@ -2,9 +2,7 @@ package org.example.com.leetcode.dp.middle;
 
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -117,6 +115,9 @@ public class Q11 {
         };
         List<String> res = Arrays.stream(strList).collect(Collectors.toList());
         q.pathsWithMaxScore(res);
+
+
+        Set set = new HashSet();
     }
 }
 
