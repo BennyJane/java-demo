@@ -1,19 +1,13 @@
 package org.example.com.listDemo;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * 数组转List
  * https://blog.csdn.net/x541211190/article/details/79597236
  */
 public class Demo {
-    public static void main(String[] args) {
-        firstEx();
 
-    }
 
     static void firstEx() {
         /**
@@ -26,6 +20,11 @@ public class Demo {
         List list = Arrays.asList(l);
         // list.add("1");  // 异常：UnsupportedOperationException
         System.out.println(list);
+        list.get(0);
+//        list.remove(0);
+
+        HashSet<Character> set = new HashSet<>();
+
     }
 
     static void secondEx() {
@@ -61,5 +60,16 @@ public class Demo {
         list.add(2);
         System.out.println(list.contains(10));
         System.out.println(list.indexOf(2));
+
+
+        int index = list.indexOf(2);
+        System.out.println(index);
+        list.get(index + 1);
+    }
+
+    public static void main(String[] args) {
+//        firstEx();
+
+        fourEx();
     }
 }
