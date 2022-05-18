@@ -65,6 +65,7 @@ public class Demo {
         int index = list.indexOf(2);
         System.out.println(index);
         list.get(index + 1);
+        String s = "abc";
     }
 
     public static void main(String[] args) {
