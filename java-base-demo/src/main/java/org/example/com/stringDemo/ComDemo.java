@@ -35,6 +35,10 @@ public class ComDemo {
 
         System.out.println(str.startsWith("be"));
 
+
+        // 正则匹配
+        boolean rs = str.matches(".*");
+        System.out.println(rs);
     }
 
     public static void IntegerTest() {
