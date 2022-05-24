@@ -1,7 +1,5 @@
 package org.example.com.niuke.one;
 
-import java.util.*;
-
 public class Q2 {
     public static void main(String[] args) {
         String s = "sdfsf\\dfs";
@@ -88,47 +86,141 @@ public class Q2 {
 //}
 
 
-class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+class Solution {
+    public String solve(String s, String t) {
+        if (s.length() == 0) return t;
+        if (t.length() == 0) return s;
 
-        Map<String, Integer> map = new HashMap<>();
-
-        List<String> order = new ArrayList<>();
-
-        while (sc.hasNextLine()) {
-            String line = sc.nextLine();
-            // TODO　确认分割符号
-            String[] array = line.split("\\.");
-            String fileNo = array[array.length - 1];
-            map.put(fileNo, map.getOrDefault(fileNo, 0) + 1);
-
-            order.add(fileNo);
+        int isNeg1 = 1;
+        if (s.charAt(0) == '-') {
+            isNeg1 = -1;
+            s = s.substring(1);
+        }
+        int isNeg2 = 1;
+        if (t.charAt(0) == '-') {
+            isNeg2 = -1;
+            t = t.substring(1);
         }
 
+        // 判断符合是否不同
+        boolean isDiff = isNeg1 * isNeg2 < 0;
 
-        Collections.sort(order,
-                (a, b) -> {
-                    return map.get(b) - map.get(a);
-                }
+        // TODO 核心：需要确定两个数大小关系，减法运算需要较大值 - 较小值
+        if (!isDiff) {
+            String ans = addSame(s, t);
+            if (isNeg1 < 0) return "-" + ans;
+            return ans;
+        }
 
-        );
+        int compareResult = compareStr(s, t);
 
-        int limit = Math.min(8, order.size());
+        if (compareResult == 0) {
+            return "0";
+        } else if (compareResult > 0) {
+            String ans = addOther(s, t);
+            if (isNeg1 < 0) return "-" + ans;
+            return ans;
+        } else {
+            String ans = addOther(t, s);
+            if (isNeg2 < 0) return "-" + ans;
+            return ans;
+        }
+    }
 
-        for (int i = 0; i < limit; i++) {
-            String fileNumber = order.get(i);
-            String[] arr = fileNumber.split(" ");
-            String file = arr[0];
-            if (file.length() > 16) {
-                int len = file.length();
-                file = file.substring(len - 16, len);
+    private String addSame(String s, String t) {
+        int n = s.length();
+        int m = t.length();
+
+        int add = 0;
+        int right1 = n - 1, right2 = m - 1;
+        StringBuilder sb = new StringBuilder();
+        while (right1 >= 0 || right2 >= 0) {
+            int v1 = right1 >= 0 ? s.charAt(right1) - '0' : 0;
+            int v2 = right2 >= 0 ? t.charAt(right2) - '0' : 0;
+
+            // 结合add，计算当前
+            int sum = v1 + v2 + add;
+            int nxt = sum % 10;
+            add = sum / 10;
+            sb.append(nxt);
+
+            right1--;
+            right2--;
+        }
+
+        if (add > 0) {
+            sb.append(add);
+        }
+        // reverse() 方法，逆向排序
+        return sb.reverse().toString();
+    }
+
+    private String addOther(String larger, String lower) {
+        int n = larger.length();
+        int m = lower.length();
+
+        int add = 0;
+        int right1 = n - 1, right2 = m - 1;
+        StringBuilder sb = new StringBuilder();
+        while (right1 >= 0 || right2 >= 0) {
+            int v1 = right1 >= 0 ? larger.charAt(right1) - '0' : 0;
+            int v2 = right2 >= 0 ? lower.charAt(right2) - '0' : 0;
+
+            // 结合add，计算当前
+            int sum = 0;
+            if (v1 + add >= v2) {
+                sum = v1 - v2 + add;
+            } else {
+                sum = 10 + v1 - v2 + add;
+                add = -1;
             }
-            String number = arr[1];
+            int nxt = sum % 10;
+            sb.append(nxt);
 
-            String res = file + " " + number + " " + map.get(fileNumber);
-
-            System.out.println(res);
+            right1--;
+            right2--;
         }
+
+        // TODO 大数 - 小数，可能存在头部为0
+        // reverse() 方法，逆向排序
+        String res = sb.reverse().toString();
+        for (int i = 0; i < res.length(); i++) {
+            if (res.charAt(i) != '0') {
+                res = res.substring(i);
+                break;
+            }
+        }
+        return res;
+    }
+
+    private int compareStr(String s, String t) {
+        int n = s.length(), m = t.length();
+        if (n == m) {
+            for (int i = 0; i < n; i++) {
+                if (s.charAt(i) != t.charAt(i)) {
+                    return s.charAt(i) - t.charAt(i);
+                }
+            }
+            return 0;
+        } else if (n > m) {
+            return 1;
+        } else {
+            return -1;
+        }
+    }
+
+    public static void main(String[] args) {
+        Solution s = new Solution();
+//        System.out.println(s.solve("-1", "-100"));
+//        System.out.println(s.solve("-1", "100"));
+//        System.out.println(s.solve("1", "100"));
+//        System.out.println(s.solve("1", "-100"));
+//
+//
+//        System.out.println(s.solve("-1", "-99"));
+        System.out.println(s.solve("1000", "-999"));
+        System.out.println(s.solve("-999", "-999"));
+        System.out.println(s.solve("999", "-999"));
+
     }
 }

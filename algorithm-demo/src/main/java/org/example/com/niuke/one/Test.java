@@ -31,6 +31,7 @@ public class Test {
         Scanner in = new Scanner(System.in);
         String [] mm = in.nextLine().split(",");
         String [] nn = in.nextLine().split(",");
+
         int k = in.nextInt();
         B [] b = new B [mm.length];
         for(int i = 0; i < b.length; i ++) {
@@ -49,3 +50,4 @@ public class Test {
 
     }
 }
+

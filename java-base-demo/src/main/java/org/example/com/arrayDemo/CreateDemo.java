@@ -1,11 +1,13 @@
 package org.example.com.arrayDemo;
 
+import java.util.Arrays;
+
 /**
  * https://blog.csdn.net/u014199097/article/details/50551731
  */
 public class CreateDemo {
     public static void main(String[] args) {
-
+        method3Test();
     }
 
     /**
@@ -65,5 +67,9 @@ public class CreateDemo {
         // int intErrorArray5[] = new int[3]{50,51,52};
         // 错误写法：动态初始化必须指定元素个数
         // int intErrorArray6[] = new int[];
+
+        int n = intArray2.length;
+        int[] res = Arrays.copyOfRange(intArray2, 0, n - 1);
+        System.out.println(Arrays.toString(res));
     }
 }
