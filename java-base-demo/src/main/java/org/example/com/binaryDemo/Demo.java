@@ -34,6 +34,11 @@ public class Demo {
         System.out.println(32 >> 5);
         System.out.println(1 * 32);
         System.out.println(1 << 5);
+
+        System.out.println(1 << 2);
+        System.out.println(~(1 << 2));
+        System.out.println(4 & ~(1 << 2));
+        System.out.println(4 & ~(1 << 2));
     }
 
     public static void method3() {

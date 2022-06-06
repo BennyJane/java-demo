@@ -1,11 +1,25 @@
 package org.example.com.stringDemo;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class ComDemo {
     public static void main(String[] args) {
         splitTest();
         IntegerTest();
+
+        System.out.println("{[(".contains("("));
+        String.valueOf('c');
+
+        System.out.println("AABdsf".toLowerCase(Locale.ROOT));
+
+        // replace: 使用原始字符匹配； replaceAll: 基于正则匹配
+        System.out.println("a...d.dcdfs".replace("\\.", "_"));
+        System.out.println("a...d.dcdfs".replaceAll("\\.", "_"));
+
+
+        new ArrayList();
     }
 
     static void splitTest() {
