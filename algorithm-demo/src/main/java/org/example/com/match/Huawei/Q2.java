@@ -1,8 +1,6 @@
 package org.example.com.match.Huawei;
 
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 题目描述
@@ -32,78 +30,59 @@ import java.util.Set;
 public class Q2 {
 
     // TODO 反向思考：优先保留未来访问频率最大的值
-    // 贪心思想
-    private static Set<Integer> cache;
-    private static int limit;
-
-    private static int ans;
-
+    // 贪心思想：每次删去存在缓存中，且该数字在后续出现的索引下标最大（或不存在）
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         while (sc.hasNext()) {
             int n = sc.nextInt();
             int m = sc.nextInt();
 
-            limit = m;
-            cache = new HashSet<>();
-            ans = Integer.MAX_VALUE;
-
             int[] nums = new int[n];
-
-            int miss = 0;
-
             for (int i = 0; i < n; i++) {
                 nums[i] = sc.nextInt();
             }
 
-            for (int i = 0; i < n; i++) {
+            // 记录每个值右侧出现第一个相同值的索引
+            int[] rightNxt = new int[n];
+            Arrays.fill(rightNxt, Integer.MAX_VALUE);
+
+            // 存储缓存值
+            Set<Integer> cache = new HashSet<>();
+            Map<Integer, Integer> map = new HashMap<>();
+            for (int i = n - 1; i >= 0; i--) {
                 int c = nums[i];
-                if (cache.contains(c)) {
+                if (map.containsKey(c)) {
+                    rightNxt[i] = map.get(c);
+                }
+                map.put(c, i);
+            }
+
+            PriorityQueue<int[]> queue = new PriorityQueue<int[]>(m,
+                    (a, b) -> b[0] - a[0]);
+
+            int miss = 0;
+            for (int i = 0; i < n; i++) {
+                int cur = nums[i];
+                if (cache.contains(cur)) {
                     continue;
                 }
-                if (i + 1 < n) {
-                    int nxt = nums[i + 1];
-
-                }
-
                 miss++;
 
+                if (cache.size() < m) {
+                    cache.add(cur);
+                    queue.offer(new int[]{rightNxt[i], i});
+                } else {
+                    // TODO 优先删除最迟出现的数据，即索引最大的值
+                    int[] lastInfo = queue.poll();
+                    cache.remove(nums[lastInfo[1]]);
+                    cache.add(cur);
+                    queue.offer(new int[]{rightNxt[i], i});
+                }
             }
 
-            dfs(nums, 0, 0);
-            System.out.println(ans);
-            sc.nextLine();
+            System.out.println(miss);
         }
     }
-
-
-    public static void dfs(int[] nums, int index, int count) {
-        if (index >= nums.length) {
-            ans = Math.min(ans, count);
-            return;
-        }
-        int cur = nums[index];
-        if (cache.contains(cur)) {
-            dfs(nums, index + 1, count);
-            return;
-        }
-
-        if (cache.size() >= limit) {
-            cache.add(cur);
-            for (int i = 0; i < index; i++) {
-                int before = nums[i];
-                cache.remove(before);
-                dfs(nums, index + 1, count + 1);
-                cache.add(before);
-            }
-            cache.remove(cur);
-        } else {
-            cache.add(cur);
-            dfs(nums, index + 1, count + 1);
-            cache.remove(cur);
-        }
-    }
-
 
 }
 

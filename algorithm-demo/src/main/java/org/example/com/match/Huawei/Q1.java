@@ -46,8 +46,6 @@ public class Q1 {
             cache = new HashSet<>();
             ans = Integer.MAX_VALUE;
 
-            cache.add(null);
-
             int[] nums = new int[n];
 
             for (int i = 0; i < n; i++) {
