@@ -54,6 +54,8 @@ public class CreateDemo {
         System.out.println("charArray0[0]=" + charArray0[0]);
         String[] stringArray0 = new String[3];
         System.out.println("stringArray0[0]=" + stringArray0[0]);
+
+        Arrays.stream(intArray0).max().getAsInt();
     }
 
     static void method3Test() {

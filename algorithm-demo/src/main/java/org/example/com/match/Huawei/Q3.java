@@ -26,63 +26,70 @@ import java.util.*;
  * 1 2 3 1 2 3
  * 输出样例 1
  * 4
+ *
+ * 参考文章
+ * https://www.nowcoder.com/questionTerminal/775370975e0246dbb535292db33aa264?answerType=1&f=discussion
+ *
+ * https://blog.csdn.net/qian2213762498/article/details/81810014
  */
-public class Q2 {
+public class Q3 {
 
     // TODO 反向思考：优先保留未来访问频率最大的值
     // 贪心思想：每次删去存在缓存中，且该数字在后续出现的索引下标最大（或不存在）
+    public static final int limit = 100050;
+    public static Map<Integer, Integer> map;
+    public static boolean[] cache = new boolean[limit];
+    public static int[] nxtIndex = new int[limit];
+    public static int[] nums = new int[limit];
+
+    public static int num = 0;
+
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         while (sc.hasNext()) {
             int n = sc.nextInt();
             int m = sc.nextInt();
 
-            if (m >= Math.pow(10, 6)+1) {
-                System.out.println(0);
-                continue;
-            }
-
-            int[] nums = new int[n];
             for (int i = 0; i < n; i++) {
                 nums[i] = sc.nextInt();
             }
 
             // 记录每个值右侧出现第一个相同值的索引
-            int[] rightNxt = new int[n];
-            Arrays.fill(rightNxt, Integer.MAX_VALUE);
-
             // 存储缓存值
-            Set<Integer> cache = new HashSet<>();
-            Map<Integer, Integer> map = new HashMap<>();
             for (int i = n - 1; i >= 0; i--) {
                 int c = nums[i];
                 if (map.containsKey(c)) {
-                    rightNxt[i] = map.get(c);
+                    nxtIndex[i] = map.get(c);
+                } else {
+                    nxtIndex[i] = limit - 1;
                 }
                 map.put(c, i);
             }
 
-            PriorityQueue<int[]> queue = new PriorityQueue<int[]>(m,
-                    (a, b) -> b[0] - a[0]);
+            PriorityQueue<Integer> queue = new PriorityQueue<>(m,
+                    (a, b) -> b - a);
 
             int miss = 0;
             for (int i = 0; i < n; i++) {
-                int cur = nums[i];
-                if (cache.contains(cur)) {
-                    continue;
-                }
-                miss++;
-
-                if (cache.size() < m) {
-                    cache.add(cur);
-                    queue.offer(new int[]{rightNxt[i], i});
+                if (!cache[i]) {
+                    miss++;
+                    if (num < m) {
+                        num++;
+                        cache[nxtIndex[i]] = true;
+                        queue.offer(nxtIndex[i]);
+                    } else {
+                        int rightIndex = queue.poll();
+                        cache[rightIndex] = false;
+                        cache[nxtIndex[i]] = true;
+                        queue.offer(nxtIndex[i]);
+                    }
                 } else {
-                    // TODO 优先删除最迟出现的数据，即索引最大的值
-                    int[] lastInfo = queue.poll();
-                    cache.remove(nums[lastInfo[1]]);
-                    cache.add(cur);
-                    queue.offer(new int[]{rightNxt[i], i});
+                    cache[nxtIndex[i]] = true;
+                    queue.offer(nxtIndex[i]);
                 }
+
+
             }
 
             System.out.println(miss);

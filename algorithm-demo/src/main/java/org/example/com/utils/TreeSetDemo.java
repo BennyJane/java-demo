@@ -1,6 +1,8 @@
 package org.example.com.utils;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.TreeSet;
 
 public class TreeSetDemo {
@@ -25,5 +27,11 @@ public class TreeSetDemo {
         System.out.println(treeSet.first());
         System.out.println(treeSet.last());
         System.out.println(treeSet.isEmpty());
+
+        StringBuilder sb = new StringBuilder();
+        sb.indexOf('c' + "");
+
+        String s = "abc";
+        Map<Character, Integer> map = new HashMap<>();
     }
 }
