@@ -9,6 +9,9 @@ public class Demo {
 
         map.put(1, 10);
 
+        for (int key : map.keySet()) {
+
+        }
 
     }
 }
