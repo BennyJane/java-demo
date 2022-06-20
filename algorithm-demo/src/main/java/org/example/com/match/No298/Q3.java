@@ -1,5 +1,6 @@
 package org.example.com.match.No298;
 
+//2311. 小于等于 K 的最长二进制子序列
 public class Q3 {
     public static void main(String[] args) {
         Q3 q = new Q3();
@@ -8,67 +9,41 @@ public class Q3 {
         q.longestSubsequence("001010101011010100010101101010010", 93951055);
     }
 
+    // 贪心思想
     public int longestSubsequence(String s, int k) {
-        String target = Integer.toBinaryString(k);
-        char[] kArr = target.toCharArray();
-        int m = kArr.length;
+        String kB = Integer.toBinaryString(k);
+        int m = kB.length();
+        int n = s.length();
 
-        char[] array = s.toCharArray();
-        int n = array.length;
-        if (n < m) {
-            return n;
+        // 小于k的二进制：长度小于 或 每个位置数值小于等于k同位置数字
+        if (n < m) return n;
+
+        // 截取尾部长度为m的字符串
+        String tail = s.substring(n - m);
+        // 根据tail 与 kB的大小，决定长度取 m 或 m - 1
+        // 当tail大于kB时，一定是某个位置上 tail是1 而 kB为0，
+        // 因此为了确保tail <= kB，要么长度减一；
+        // 或者 在前缀中寻找一个0替换当前位置的1，那么前缀0的数量就会减少1，效果不会优于tail长度减1
+        int length = tail.compareTo(kB) > 0 ? m - 1 : m;
+        // 统计s前缀[0, n -m) 范围内前缀0的数量
+        for (char c : s.substring(0, n - m).toCharArray()) {
+            if (c == '0') length++;
         }
-
-        // 统计连续0的数量
-        int[] left = new int[n + 1];
-        for (int i = 1; i <= n; i++) {
-            if (array[i - 1] == '0') {
-                left[i] += left[i - 1] + 1;
-            } else {
-                left[i] = left[i - 1];
-            }
-        }
-
-        int ans = 0;
-        for (int i = 0; i < n; i++) {
-            char c = array[i];
-            if (c == '1') {
-                int retain = n - i;
-                childLen = 0;
-                if (retain < m) {
-                    childLen = retain;
-                } else {
-                    dfs(array, kArr, i, 0, 0);
-                }
-                ans = Math.max(ans, childLen + left[i]);
-            }
-        }
-
-        return ans;
+        return length;
     }
 
-    private int childLen = 0;
-
-    private void dfs(char[] ori, char[] target, int x, int y, int len) {
-        if (x >= ori.length) {
-            childLen = Math.max(childLen, len);
-            return;
-        }
-
-        if (y >= target.length) {
-            childLen = target.length;
-            return;
-        }
-
-        if (childLen == target.length) return;
-
-        char b = target[y];
-        for (int i = x; i < ori.length; i++) {
-            char a = ori[i];
-            if (a >= b) {
-                dfs(ori, target, i + 1, y + 1, len + 1);
-            }
-        }
+    public int longestSubsequence2(String s, int k) {
+        int n = s.length(), m = 32 - Integer.numberOfLeadingZeros(k);
+        if (n < m) return n;
+        int ans = Integer.parseInt(s.substring(n - m), 2) <= k ? m : m - 1;
+        return ans + (int) s.substring(0, n - m).chars().filter(c -> c == '0').count();
     }
 
+    public int longestSubsequence3(String s, int k) {
+        int n = s.length(), m = 32 - Integer.numberOfLeadingZeros(k);
+        if (n < m) return n;
+        int ans = Integer.parseInt(s.substring(n - m), 2) <= k ? m : m - 1;
+        return ans + (int) s.substring(0, n - m).chars().filter(c -> c == '0').count();
+    }
 }
+
